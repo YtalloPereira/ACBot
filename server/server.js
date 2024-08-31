@@ -10,6 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 
 app.post('/data', async (req, res) => {
+  console.log(req.body);
   const response = await index.handler(req.body);
   res.send(response);
 });
