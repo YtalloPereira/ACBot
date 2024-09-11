@@ -1,0 +1,22 @@
+service: academic-soon
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: ${env:REGION}
+  profile: ${env:PROFILE_NAME, 'default'}
+
+functions:
+  health:
+    handler: index.health
+    events:
+      - httpApi:
+          path: /
+          method: get
+
+  v1Description:
+    handler: index.v1Description
+    events:
+      - httpApi:
+          path: /v1
+          method: get
