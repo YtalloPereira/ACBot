@@ -5,6 +5,23 @@ provider:
   runtime: nodejs20.x
   region: ${env:REGION}
   profile: ${env:PROFILE_NAME, 'default'}
+  environment:
+    RESOURCE_PREFIX: ${env:RESOURCE_PREFIX}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:GetObject
+        - s3:PutObject
+      Resource:
+        - arn:aws:s3:::${env:RESOURCE_PREFIX}/*
+    - Effect: Allow
+      Action:
+        - rekognition:DetectText
+      Resource: '*'
+    - Effect: Allow
+      Action:
+        - cloudwatch:PutMetricData
+      Resource: '*'
 
 functions:
   health:
@@ -20,3 +37,22 @@ functions:
       - httpApi:
           path: /v1
           method: get
+
+resources:
+  Resources:
+    S3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${env:RESOURCE_PREFIX}
+
+    S3BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref S3Bucket
+        PolicyDocument:
+          Statement:
+            - Effect: Allow
+              Action: s3:GetObject
+              Resource: arn:aws:s3:::${env:RESOURCE_PREFIX}/*
+              Principal:
+                Service: amplify.amazonaws.com
