@@ -44,6 +44,13 @@ functions:
       - httpApi:
           path: /v1/images/make-upload
           method: post
+  
+  uploadAudio:
+    handler: controllers.uploadAudio.handler
+    events:
+      - httpApi:
+          path: /v1/audios/make-upload
+          method: post
 
 resources:
   Resources:
