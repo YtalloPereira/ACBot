@@ -38,6 +38,13 @@ functions:
           path: /v1
           method: get
 
+  uploadImage:
+    handler: controllers.uploadImage.handler
+    events:
+      - httpApi:
+          path: /v1/images/make-upload
+          method: post
+
 resources:
   Resources:
     S3Bucket:
