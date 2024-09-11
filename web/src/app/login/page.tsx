@@ -1,5 +1,6 @@
 import { Banner } from '@/components/banner';
 import { Carousel } from '@/components/carousel';
+import { LoginForm } from '@/components/login-form';
 import { hasAuthToken } from '@/lib/auth-token';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
@@ -20,6 +21,7 @@ export default async function Login() {
       <Carousel />
       <div className="flex w-full flex-col overflow-y-auto lg:w-[550px]">
         <Banner />
+        <LoginForm />
       </div>
     </div>
   );

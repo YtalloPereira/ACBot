@@ -10,7 +10,10 @@
   },
   "dependencies": {
     "@aws-amplify/interactions": "^6.0.46",
+    "@hookform/resolvers": "^3.9.0",
+    "@radix-ui/react-alert-dialog": "^1.1.1",
     "aws-amplify": "^6.6.0",
+    "lucide-react": "^0.438.0",
     "next": "14.2.7",
     "next-themes": "^0.3.0",
     "react": "^18",
@@ -20,7 +23,8 @@
     "swiper": "11.0.7",
     "tailwind-merge": "^2.5.2",
     "tailwind-variants": "^0.2.1",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20",
