@@ -1,4 +1,6 @@
 const { RekognitionClient, DetectTextCommand } = require('@aws-sdk/client-rekognition');
+const { makeResponse } = require('../lib/response');
+const { validateImageName } = require('../lib/validation');
 
 const rekognition = new RekognitionClient();
 
@@ -12,7 +14,7 @@ module.exports.handler = async (event) => {
     }
 
     // Check if the file name is provided
-    if (!validateFilename(filename)) {
+    if (!validateImageName(filename)) {
       return makeResponse(400, {
         message: 'Invalid file format. Only .png, .jpg, and .jpeg are allowed',
       });

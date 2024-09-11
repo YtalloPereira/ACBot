@@ -39,21 +39,21 @@ functions:
           method: get
 
   uploadImage:
-    handler: controllers.uploadImage.handler
+    handler: controllers/uploadImage.handler
     events:
       - httpApi:
           path: /v1/images/make-upload
           method: post
   
   uploadAudio:
-    handler: controllers.uploadAudio.handler
+    handler: controllers/uploadAudio.handler
     events:
       - httpApi:
           path: /v1/audios/make-upload
           method: post
 
   detectImageText:
-    handler: controllers.detectImageText.handler
+    handler: controllers/detectImageText.handler
     events:
       - httpApi:
           path: /v1/images/detect-text

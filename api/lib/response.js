@@ -6,4 +6,4 @@ module.exports.makeResponse = (statusCode, body) => {
     },
     body: JSON.stringify(body, null, 2),
   };
-}
+};

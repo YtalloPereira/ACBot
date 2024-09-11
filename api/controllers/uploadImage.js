@@ -15,17 +15,16 @@ module.exports.handler = async (event) => {
     // Check if the filename is valid
     if (!validateImageName(filename)) {
       return makeResponse(400, {
-        message:
-          'Invalid file format. Only .png, .jpg, and .jpeg are allowed',
+        message: 'Invalid file format. Only .png, .jpg, and .jpeg are allowed',
       });
     }
 
     // Generate a signed URL for the client to upload the file
-    const signedUrl = await makeSignedUrl(filename);
+    const { objectKey, signedUrl } = await makeSignedUrl(filename);
 
-    return makeResponse(200, { 
+    return makeResponse(200, {
       filename: objectKey,
-      url: signedUrl 
+      url: signedUrl,
     });
   } catch (error) {
     return makeResponse(500, {
