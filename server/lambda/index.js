@@ -1,7 +1,7 @@
-import { handleSaudacaoIntent } from "./controllers/SaudacaoInicial.js";
+const { handleSaudacaoIntent  } = require("./controllers/SaudacaoInicial");
 
 
-export const handler = async (event) => {
+module.exports.handler = async (event) => {
   const intentName = event.sessionState.intent.name;
 
   switch (intentName) {

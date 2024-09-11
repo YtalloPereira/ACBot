@@ -1,4 +1,4 @@
-export const handleopenGuidedProcessIntent = async (event) => {
+module.exports.handleopenGuidedProcessIntent = async (event) => {
     const response = {
       
     

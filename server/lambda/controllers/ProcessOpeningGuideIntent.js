@@ -1,4 +1,4 @@
-export const handleprocessOpeningGuideIntent = async (event) => {
+module.exports.handleprocessOpeningGuideIntent = async (event) => {
     const response = {
       
     

@@ -1,7 +1,6 @@
-import cors from "cors";
-import express from 'express';
-import * as index from './lambda/index.js';
-
+const cors = require('cors');
+const express = require('express')
+const index = require('./lambda/index.js')
 const app = express()
 const port = 3000
 

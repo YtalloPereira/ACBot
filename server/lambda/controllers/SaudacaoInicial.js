@@ -1,4 +1,4 @@
-export const handleSaudacaoIntent = async (event) => {
+module.exports.handleSaudacaoIntent = async (event) => {
    const response = {
       sessionState: {
          ...event.sessionState,
