@@ -1,3 +1,5 @@
+import { Toast } from '@/components/toast';
+import { ThemeProvider } from '@/contexts/theme';
 import { Metadata } from 'next';
 import { Chicle, Inter } from 'next/font/google';
 import './globals.css';
@@ -18,7 +20,12 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      <body className={`${inter.className} ${chicle.variable}`}>{children}</body>
+      <body className={`${inter.className} ${chicle.variable}`}>
+        <ThemeProvider>
+          <Toast />
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
