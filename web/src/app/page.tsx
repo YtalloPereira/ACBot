@@ -1,3 +1,5 @@
+import { Header } from '@/components/header';
+import { Main } from '@/components/main';
 import { hasAuthToken } from '@/lib/auth-token';
 import { redirect } from 'next/navigation';
 
@@ -9,8 +11,8 @@ export default async function Home() {
   }
 
   return (
-    <main>
-      <h1>Home</h1>
-    </main>
+    <Main>
+      <Header />
+    </Main>
   );
 }
