@@ -24,7 +24,7 @@ module.exports.handler = async (event) => {
     const command = new DetectTextCommand({
       Image: {
         S3Object: {
-          Bucket: `${process.env.RESOURCE_PREFIX}-bt`,
+          Bucket: process.env.RESOURCE_PREFIX,
           Name: filename,
         },
       },

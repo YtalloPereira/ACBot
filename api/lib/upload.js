@@ -10,7 +10,7 @@ module.exports.makeSignedUrl = async (filename) => {
 
   // Create a PutObjectCommand
   const command = new PutObjectCommand({
-    Bucket: `${process.env.RESOURCE_PREFIX}-bt`,
+    Bucket: process.env.RESOURCE_PREFIX,
     Key: objectKey, // Generate a random UUID to avoid collisions
   });
 
