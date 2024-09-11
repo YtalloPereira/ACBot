@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-amplify/interactions": "^6.0.46",
+    "aws-amplify": "^6.6.0",
     "next": "14.2.7",
     "next-themes": "^0.3.0",
     "react": "^18",

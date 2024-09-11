@@ -1,4 +1,6 @@
+import { ConfigureAmplify } from '@/components/configure-amplify';
 import { Toast } from '@/components/toast';
+import { AuthProvider } from '@/contexts/auth';
 import { ThemeProvider } from '@/contexts/theme';
 import { Metadata } from 'next';
 import { Chicle, Inter } from 'next/font/google';
@@ -22,8 +24,12 @@ export default async function RootLayout({
     <html lang="pt-BR" suppressHydrationWarning>
       <body className={`${inter.className} ${chicle.variable}`}>
         <ThemeProvider>
-          <Toast />
-          {children}
+          <ConfigureAmplify>
+            <AuthProvider>
+              <Toast />
+              {children}
+            </AuthProvider>
+          </ConfigureAmplify>
         </ThemeProvider>
       </body>
     </html>

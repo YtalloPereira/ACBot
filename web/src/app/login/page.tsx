@@ -1,12 +1,20 @@
 import { Banner } from '@/components/banner';
 import { Carousel } from '@/components/carousel';
+import { hasAuthToken } from '@/lib/auth-token';
 import { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: 'Entrar | Academic Soon',
 };
 
 export default async function Login() {
+  const authToken = await hasAuthToken();
+
+  if (authToken) {
+    redirect('/');
+  }
+
   return (
     <div className="flex h-screen">
       <Carousel />
