@@ -1,4 +1,4 @@
-export const checkProcessTypesIntent = async (event) => {
+export const handlecheckProcessTypesIntent = async (event) => {
     const response = {
       
     
