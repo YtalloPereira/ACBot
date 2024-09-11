@@ -22,6 +22,14 @@ provider:
       Action:
         - cloudwatch:PutMetricData
       Resource: '*'
+  httpApi:
+    authorizers:
+      cognitoAuthorizer:
+        type: jwt
+        identitySource: $request.header.Authorization
+        issuerUrl: !Sub https://cognito-idp.${self:provider.region}.amazonaws.com/${CognitoUserPool}
+        audience:
+          - !Ref WebCognitoUserPoolClient
 
 functions:
   health:
@@ -44,6 +52,8 @@ functions:
       - httpApi:
           path: /v1/images/make-upload
           method: post
+          authorizer: 
+            name: cognitoAuthorizer
   
   uploadAudio:
     handler: controllers/uploadAudio.handler
@@ -51,6 +61,8 @@ functions:
       - httpApi:
           path: /v1/audios/make-upload
           method: post
+          authorizer: 
+            name: cognitoAuthorizer
 
   detectImageText:
     handler: controllers/detectImageText.handler
@@ -58,6 +70,8 @@ functions:
       - httpApi:
           path: /v1/images/detect-text
           method: post
+          authorizer: 
+            name: cognitoAuthorizer
 
 resources:
   Resources:
@@ -77,3 +91,81 @@ resources:
               Resource: arn:aws:s3:::${env:RESOURCE_PREFIX}/*
               Principal:
                 Service: amplify.amazonaws.com
+
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: ${env:RESOURCE_PREFIX}-userpool
+        UsernameAttributes:
+          - email
+        UsernameConfiguration:
+          CaseSensitive: false
+        AutoVerifiedAttributes:
+          - email
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 8
+            RequireLowercase: true
+            RequireNumbers: true
+            RequireUppercase: true
+            RequireSymbols: true
+        Schema:
+          - Name: name
+            AttributeDataType: String
+            Mutable: true
+            Required: true
+
+    WebCognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: ${env:RESOURCE_PREFIX}-webclient
+        UserPoolId: !Ref CognitoUserPool
+        ExplicitAuthFlows:
+          - ALLOW_USER_SRP_AUTH
+          - ALLOW_REFRESH_TOKEN_AUTH
+        PreventUserExistenceErrors: ENABLED
+
+    CognitoIdentityPool:
+      Type: AWS::Cognito::IdentityPool
+      Properties:
+        IdentityPoolName: ${env:RESOURCE_PREFIX}-identitypool
+        AllowUnauthenticatedIdentities: false
+        CognitoIdentityProviders:
+          - ClientId: !Ref WebCognitoUserPoolClient
+            ProviderName: !Sub cognito-idp.${self:provider.region}.amazonaws.com/${CognitoUserPool}
+
+    CognitoAuthRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Federated: cognito-identity.amazonaws.com
+              Action: sts:AssumeRoleWithWebIdentity
+              Condition:
+                StringEquals:
+                  cognito-identity.amazonaws.com:aud: !Ref CognitoIdentityPool
+                ForAnyValue:StringLike:
+                  cognito-identity.amazonaws.com:amr: 'authenticated'
+        Policies:
+          - PolicyName: CognitoAuthorizedPolicy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - cognito-identity:GetCredentialsForIdentity
+                    - lex:PostText
+                    - lex:PostContent
+                    - lex:RecognizeText
+                  Resource: '*'
+
+    CognitoIdentityPoolRoleAttachment:
+      Type: 'AWS::Cognito::IdentityPoolRoleAttachment'
+      Properties:
+        IdentityPoolId:
+          Ref: 'CognitoIdentityPool'
+        Roles:
+          authenticated: !GetAtt CognitoAuthRole.Arn
