@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "next/core-web-vitals", 
+    "plugin:prettier/recommended"
+  ],
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "configFile": ".prettierrc"
+      }
+    ],
+    "tailwindcss/no-custom-classname": "off",
+    "@next/next/no-html-link-for-pages": "off"
+  }
+}
