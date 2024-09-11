@@ -52,6 +52,13 @@ functions:
           path: /v1/audios/make-upload
           method: post
 
+  detectImageText:
+    handler: controllers.detectImageText.handler
+    events:
+      - httpApi:
+          path: /v1/images/detect-text
+          method: post
+
 resources:
   Resources:
     S3Bucket:
