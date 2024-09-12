@@ -1,3 +1,4 @@
+import { Chatbot } from '@/components/chatbot';
 import { Header } from '@/components/header';
 import { Main } from '@/components/main';
 import { hasAuthToken } from '@/lib/auth-token';
@@ -13,6 +14,7 @@ export default async function Home() {
   return (
     <Main>
       <Header />
+      <Chatbot />
     </Main>
   );
 }

@@ -203,6 +203,7 @@ export const Chatbot = () => {
                   <div>
                     <Image
                       src="/typing-animation.gif"
+                      unoptimized
                       width={24}
                       height={24}
                       alt="..."

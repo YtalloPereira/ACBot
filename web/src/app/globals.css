@@ -75,6 +75,13 @@
   }
 }
 
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
 @keyframes overlay-show {
   from {
     opacity: 0;
@@ -156,5 +163,27 @@
   to {
     opacity: 0;
     transform: translate(2%, 0);
+  }
+}
+
+@keyframes chat-show {
+  from {
+    opacity: 0;
+    transform: scale(0.5) translate(30%, 40%);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translate(0, 0);
+  }
+}
+
+@keyframes chat-hide {
+  from {
+    opacity: 1;
+    transform: scale(1) translate(0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.5) translate(30%, 40%);
   }
 }
