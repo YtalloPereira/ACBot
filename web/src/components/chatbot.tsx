@@ -9,6 +9,7 @@ import { ChatbotTyping } from './chatbot-typing';
 import { Button } from './ui/button';
 import { Control, Input } from './ui/input';
 import { PopoverMenu, PopoverMenuContent, PopoverMenuTrigger } from './ui/popover-menu';
+import { convertToMp3 } from '@/utils/convert-to-mp3';
 
 export const Chatbot = () => {
   const [open, setOpen] = useState(false);
@@ -86,12 +87,17 @@ export const Chatbot = () => {
   };
 
   // Function to handle the submission of a recording and recognition
-  const handleSubmitRecordingAndRecognition = useCallback(() => {
+  const handleSubmitRecordingAndRecognition = useCallback(async () => {
     if (recognition && audioUrl) {
       setMessages((prevMessages) => [...prevMessages, { from: 'user', audioUrl }]);
-      handleSendMensage(recognition);
 
+      handleSendMensage(recognition);
       setRecognition('');
+
+      const audioFile = await convertToMp3(audioUrl);
+
+      console.log(audioFile);
+
       setAudioUrl(null);
     }
   }, [recognition, audioUrl, handleSendMensage]);
