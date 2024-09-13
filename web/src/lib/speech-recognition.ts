@@ -2,48 +2,52 @@ import { toast } from 'sonner';
 
 let speechRecognition: SpeechRecognition | null = null;
 
-export const startSpeechRecognition = (setRecognition: (recognition: string) => void) => {
-  // get the SpeechRecognition API class
-  const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+export const startSpeechRecognition = (): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    // get the SpeechRecognition API class
+    const SpeechRecognitionAPI =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
 
-  // create a new instance of the SpeechRecognition API
-  speechRecognition = new SpeechRecognitionAPI();
+    // create a new instance of the SpeechRecognition API
+    speechRecognition = new SpeechRecognitionAPI();
 
-  // set speechRecognition parameters
-  speechRecognition.lang = 'pt-BR';
-  speechRecognition.continuous = true;
-  speechRecognition.maxAlternatives = 1;
-  speechRecognition.interimResults = true;
+    // set speechRecognition parameters
+    speechRecognition.lang = 'pt-BR';
+    speechRecognition.continuous = true;
+    speechRecognition.maxAlternatives = 1;
+    speechRecognition.interimResults = true;
 
-  let recognition = '';
+    let recognition = '';
 
-  // check if the user is using an Android device
-  const isAndroid = /Android/i.test(navigator.userAgent);
+    // check if the user is using an Android device
+    const isAndroid = /Android/i.test(navigator.userAgent);
 
-  // set the continuous property to false if the user is using an Android device because it doesn't support continuous recognition
-  if (isAndroid) {
-    speechRecognition.continuous = false;
-  }
+    // set the continuous property to false if the user is using an Android device because it doesn't support continuous recognition
+    if (isAndroid) {
+      speechRecognition.continuous = false;
+    }
 
-  // check onresult event to get the recognized text
-  speechRecognition.onresult = (event) => {
-    recognition = Array.from(event.results).reduce((text, result) => {
-      return text.concat(result[0]?.transcript || '');
-    }, '');
-  };
+    // check onresult event to get the recognized text
+    speechRecognition.onresult = (event) => {
+      recognition = Array.from(event.results).reduce((text, result) => {
+        return text.concat(result[0]?.transcript || '');
+      }, '');
+    };
 
-  // check onerror event to show an error message
-  speechRecognition.onerror = () => {
-    toast.error('Erro ao gravar áudio!');
-  };
+    // check onerror event to show an error message
+    speechRecognition.onerror = () => {
+      toast.error('Erro ao gravar áudio!');
+      reject(new Error('Erro ao gravar áudio!'));
+    };
 
-  // check onend event to send recognition
-  speechRecognition.onend = () => {
-    setRecognition(recognition);
-  };
+    // check onend event to send recognition
+    speechRecognition.onend = () => {
+      resolve(recognition);
+    };
 
-  // start the speech recognition
-  speechRecognition.start();
+    // start the speech recognition
+    speechRecognition.start();
+  });
 };
 
 // stop the speech recognition

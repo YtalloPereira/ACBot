@@ -17,7 +17,7 @@ export const AudioRecorderWithSpeechRecognition = ({
 }: AudioRecorderWithSpeechRecognitionProps) => {
   const [isRecording, setIsRecording] = useState(false);
 
-  const handleStartRecording = () => {
+  const handleStartRecording = async () => {
     // Check if the browser supports the SpeechRecognition API
     const isSpeechRecognitionAvailable =
       'SpeechRecognition' in window || 'webkitSpeechRecognition' in window;
@@ -29,9 +29,15 @@ export const AudioRecorderWithSpeechRecognition = ({
 
     setIsRecording(true);
 
-    // Start config for speech recognition and audio recording
-    startSpeechRecognition(onRecognition);
-    startAudioRecorder(onRecording);
+    // Start config for speech recognition and audio recorder
+    const [recognition, audioUrl] = await Promise.all([
+      startSpeechRecognition(),
+      startAudioRecorder(),
+    ]);
+
+    // Set the recognition and audioUrl
+    onRecognition(recognition);
+    onRecording(audioUrl);
   };
 
   const handleStopRecording = () => {
@@ -48,7 +54,7 @@ export const AudioRecorderWithSpeechRecognition = ({
       size="toggle"
       onClick={!isRecording ? handleStartRecording : handleStopRecording}
       title={!isRecording ? 'Gravar áudio' : 'Parar gravação'}
-      className="focus-visible:ring-foreground data-[recording=true]:bg-danger data-[recording=true]:hover:bg-danger/90"
+      className="focus-visible:ring-foreground data-[recording=true]:bg-danger data-[recording=true]:hover:bg-danger/90 data-[recording=true]:text-white"
       data-recording={isRecording}
     >
       {!isRecording ? <Mic /> : <MicOff />}
