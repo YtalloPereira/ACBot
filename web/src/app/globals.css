@@ -2,6 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Disable highlight color on tap */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Scrollbar width */
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Scrollbar track */
+::-webkit-scrollbar-track {
+  background: hsl(var(--input));
+  border-radius: 10px;
+}
+
+/* Scrollbar handle */
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 10px;
+}
+
+/* Scrollbar handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--border)/0.8);
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -33,7 +60,7 @@
     --warning: 47 100% 53%;
     --danger: 0 72% 50%;
     --transluced: 132 100% 1% / 0.25;
-    --swiper-pagination-color: hsl(var(--primary-foreground));  
+    --swiper-pagination-color: hsl(var(--primary-foreground));
 
     --radius: 0.5rem;
   }
@@ -75,12 +102,11 @@
   }
 }
 
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
 
 @keyframes overlay-show {
   from {
