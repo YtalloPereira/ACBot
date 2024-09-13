@@ -1,6 +1,6 @@
 'use client';
 
-import { hasAuthToken } from '@/lib/auth-token';
+import { hasAuthToken } from '@/actions/headers';
 import {
   fetchUserAttributes,
   FetchUserAttributesOutput,
@@ -27,6 +27,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const router = useRouter();
 
+  // Function to remove the user context and give a sign out
   const removeUserAndToken = useCallback(async () => {
     setIsLoadingUserData(true);
 
@@ -38,11 +39,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoadingUserData(false);
   }, [router]);
 
+  // Function to load the user data from the local storage and set it
   const loadUserData = useCallback(async () => {
     try {
       const token = await hasAuthToken();
 
       if (token) {
+        // Fetch the user attributes from the cognito
         const loadedUser = await fetchUserAttributes();
         setUser(loadedUser);
       }

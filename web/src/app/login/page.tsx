@@ -1,7 +1,7 @@
+import { hasAuthToken } from '@/actions/headers';
 import { Banner } from '@/components/banner';
 import { Carousel } from '@/components/carousel';
 import { LoginForm } from '@/components/login-form';
-import { hasAuthToken } from '@/lib/auth-token';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 

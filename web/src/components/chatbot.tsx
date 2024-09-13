@@ -1,6 +1,9 @@
 'use client';
 
+import { getUploadAudioSignedUrl } from '@/actions/s3';
 import { handleInteract } from '@/lib/interactions';
+import { convertToMp3 } from '@/utils/convert-to-mp3';
+import axios from 'axios';
 import { MessageCircle, Paperclip } from 'lucide-react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { AudioRecorderWithSpeechRecognition } from './audio-recorder-with-speech-recognition';
@@ -9,7 +12,6 @@ import { ChatbotTyping } from './chatbot-typing';
 import { Button } from './ui/button';
 import { Control, Input } from './ui/input';
 import { PopoverMenu, PopoverMenuContent, PopoverMenuTrigger } from './ui/popover-menu';
-import { convertToMp3 } from '@/utils/convert-to-mp3';
 
 export const Chatbot = () => {
   const [open, setOpen] = useState(false);
@@ -89,16 +91,34 @@ export const Chatbot = () => {
   // Function to handle the submission of a recording and recognition
   const handleSubmitRecordingAndRecognition = useCallback(async () => {
     if (recognition && audioUrl) {
-      setMessages((prevMessages) => [...prevMessages, { from: 'user', audioUrl }]);
-
-      handleSendMensage(recognition);
-      setRecognition('');
-
       const audioFile = await convertToMp3(audioUrl);
 
-      console.log(audioFile);
+      const signedUrlResponse = await getUploadAudioSignedUrl(audioFile.name);
 
-      setAudioUrl(null);
+      if (signedUrlResponse) {
+        const { filename, url } = signedUrlResponse;
+
+        const formData = new FormData();
+        formData.append('file', audioFile);
+
+        await axios.put(url, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            from: 'user',
+            audioUrl: `https://${process.env.NEXT_PUBLIC_S3_DOMAIN}/${filename}`,
+          },
+        ]);
+
+        handleSendMensage(recognition);
+        setRecognition('');
+        setAudioUrl(null);
+      }
     }
   }, [recognition, audioUrl, handleSendMensage]);
 
@@ -120,7 +140,7 @@ export const Chatbot = () => {
           <MessageCircle className="text-background size-10 hover:text-white" />
         </PopoverMenuTrigger>
         <PopoverMenuContent className="mr-4 mb-4 h-[700px] flex flex-1 flex-col justify-between w-[450px] data-[state=closed]:animate-[chat-hide_200ms] data-[state=open]:animate-[chat-show_200ms]">
-          <div className="flex flex-col pt-4 px-4 space-y-4 overflow-y-auto">
+          <div className="flex flex-col mt-2 pt-2 px-4 space-y-4 overflow-y-auto">
             {messages.map((message, index) => (
               <ChatBotMessage key={index} sendMessage={handleSendMensage} {...message} />
             ))}
@@ -129,8 +149,14 @@ export const Chatbot = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          <Input className="rounded-xl rounded-t-none px-1 py-2 gap-1">
+          <Input
+            className="rounded-xl rounded-t-none px-1 py-2 gap-1"
+            name="message"
+            id="message"
+          >
             <Control
+              id="message"
+              name="message"
               type="text"
               placeholder="Digite algo..."
               autoComplete="off"
