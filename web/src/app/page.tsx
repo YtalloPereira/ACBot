@@ -1,5 +1,5 @@
 import { hasAuthToken } from '@/actions/headers';
-import { Chatbot } from '@/components/chatbot';
+import { Chatbot } from '@/components/chat/chatbot';
 import { Header } from '@/components/header';
 import { Main } from '@/components/main';
 import { redirect } from 'next/navigation';

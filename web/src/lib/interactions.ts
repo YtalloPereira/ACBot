@@ -1,15 +1,6 @@
+import { IResponseCard } from '@/hooks/use-chatbot';
 import { Interactions } from '@aws-amplify/interactions';
 import { toast } from 'sonner';
-
-export type IResponseCard = {
-  title: string;
-  subtitle?: string;
-  imageUrl?: string;
-  buttons?: {
-    text: string;
-    value: string;
-  }[];
-};
 
 interface InteractionsResponse {
   contentType: 'PlainText' | 'ImageResponseCard';
