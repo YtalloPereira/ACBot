@@ -8,7 +8,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node --no-warnings server.js",
-    "dev": "nodemon --no-warnings server.js"
+    "dev": "nodemon --no-warnings server.js",
+    "db:migrate": "node --env-file=.env database/migration.js",
+    "db:seed": "node --env-file=.env database/seeder.js"
   },
   "keywords": [],
   "dependencies": {
