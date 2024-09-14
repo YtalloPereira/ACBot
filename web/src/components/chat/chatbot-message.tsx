@@ -1,10 +1,16 @@
+import { IChatbotMessage } from '@/contexts/chatbot';
 import { useChatbot } from '@/hooks/use-chatbot';
 import { Bot } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '../ui/button';
-import { IChatbotMessage } from '@/contexts/chatbot';
 
-export const ChatbotMessage = ({ from, text, audioUrl, card }: IChatbotMessage) => {
+export const ChatbotMessage = ({
+  from,
+  text,
+  audioUrl,
+  imageUrl,
+  card,
+}: IChatbotMessage) => {
   const { submitMessage } = useChatbot();
 
   // Message component for the chatbot
@@ -28,6 +34,17 @@ export const ChatbotMessage = ({ from, text, audioUrl, card }: IChatbotMessage) 
 
         {audioUrl && <audio src={audioUrl} controls />}
 
+        {imageUrl && (
+          <Image
+            src={imageUrl}
+            alt="image"
+            width={200}
+            height={200}
+            className="rounded-xl size-auto border border-primary"
+            quality={70}
+          />
+        )}
+
         {card && (
           <div
             className="px-4 py-3 inline-block bg-primary text-white rounded-s-2xl rounded-tr-2xl data-[from=bot]:bg-border/80 data-[from=bot]:text-foreground data-[from=bot]:rounded-r-2xl data-[from=bot]:rounded-bl-none"
@@ -36,11 +53,12 @@ export const ChatbotMessage = ({ from, text, audioUrl, card }: IChatbotMessage) 
             {card?.imageUrl && (
               <div className="bg-primary rounded-xl p-2">
                 <Image
-                  src={card?.imageUrl || ''}
-                  alt=""
+                  src={card.imageUrl}
+                  alt="card-image"
                   width={200}
                   height={200}
-                  className="rounded-xl"
+                  className="rounded-xl size-auto border border-primary"
+                  quality={70}
                 />
               </div>
             )}

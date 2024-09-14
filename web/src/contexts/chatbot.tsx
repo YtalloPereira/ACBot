@@ -1,6 +1,6 @@
 'use client';
 
-import { getUploadAudioSignedUrl } from '@/actions/s3';
+import { getUploadAudioSignedUrl, getUploadImageSignedUrl } from '@/actions/s3';
 import { convertToMp3 } from '@/utils/convert-to-mp3';
 import { Interactions } from '@aws-amplify/interactions';
 import axios from 'axios';
@@ -20,6 +20,7 @@ export type IChatbotMessage = {
   from: 'bot' | 'user';
   text?: string;
   audioUrl?: string;
+  imageUrl?: string;
   card?: IResponseCard;
 };
 
@@ -40,6 +41,7 @@ export interface ChatbotProps {
   setIsRecording: (isRecording: boolean) => void;
   submitMessage: (input: string) => Promise<void>;
   submitAudio: (audioUrl: string) => Promise<string>;
+  submitImage: (file: File) => Promise<string>;
 }
 
 export const ChatbotContext = createContext<ChatbotProps>({} as ChatbotProps);
@@ -71,7 +73,10 @@ export const ChatbotProvider = ({ children }: { children: ReactNode }) => {
       // Get the bot responses
       const botResponses: InteractionsResponse[] | undefined = response.messages;
 
-      if (!botResponses || botResponses?.length === 0) return;
+      if (!botResponses || botResponses?.length === 0) {
+        setBotTyping(false);
+        return;
+      }
 
       // Set the bot responses in the chat
       botResponses.map((msg) =>
@@ -99,6 +104,7 @@ export const ChatbotProvider = ({ children }: { children: ReactNode }) => {
     const signedUrlResponse = await getUploadAudioSignedUrl(audioFile.name);
 
     if (signedUrlResponse === undefined) {
+      setProgress(null);
       throw new Error('Failed to get signed url');
     }
 
@@ -122,6 +128,32 @@ export const ChatbotProvider = ({ children }: { children: ReactNode }) => {
     return filename;
   };
 
+  const submitImage = async (file: File) => {
+    setProgress(1);
+
+    const signedUrlResponse = await getUploadImageSignedUrl(file.name);
+
+    if (signedUrlResponse === undefined) {
+      setProgress(null);
+      throw new Error('Failed to get signed url');
+    }
+
+    setProgress(50);
+
+    const { filename, url } = signedUrlResponse;
+
+    await axios.put(url, file, {
+      headers: {
+        'Content-Type': file.type,
+      },
+    });
+
+    setProgress(100);
+
+    setProgress(null);
+    return filename;
+  };
+
   return (
     <ChatbotContext.Provider
       value={{
@@ -135,6 +167,7 @@ export const ChatbotProvider = ({ children }: { children: ReactNode }) => {
         setIsRecording,
         submitMessage,
         submitAudio,
+        submitImage,
       }}
     >
       {children}

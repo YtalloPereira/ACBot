@@ -1,13 +1,13 @@
 'use client';
 
 import { useChatbot } from '@/hooks/use-chatbot';
-import { MessageCircle, Paperclip } from 'lucide-react';
+import { MessageCircle, Upload } from 'lucide-react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { Button } from '../ui/button';
 import { Control, Input } from '../ui/input';
 import { PopoverMenu, PopoverMenuContent, PopoverMenuTrigger } from '../ui/popover-menu';
 import { ProgressBar } from '../ui/progress';
+import { ChatbotFileManager } from './chatbot-file-manager';
 import { ChatbotMessage } from './chatbot-message';
 import { ChatbotRecorder } from './chatbot-recorder';
 import { ChatbotTyping } from './chatbot-typing';
@@ -17,8 +17,10 @@ export const Chatbot = () => {
 
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
-  const { messages, botTyping, progress, setMessage, submitMessage } = useChatbot();
+  const { messages, botTyping, progress, setMessage, submitMessage, submitImage } =
+    useChatbot();
 
   const scrollToBottom = (behavior: ScrollBehavior) => {
     messagesEndRef.current?.scrollIntoView({ behavior });
@@ -74,13 +76,85 @@ export const Chatbot = () => {
     setOpen(!open);
   };
 
+  const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+      setIsDragging(false);
+    }
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const files = event.dataTransfer.files;
+
+    if (!files?.length) {
+      setIsDragging(false);
+      return;
+    }
+
+    const selectedFile = files[0];
+
+    const allowedTypes = ['image/jpg', 'image/jpeg', 'image/png'];
+
+    if (!allowedTypes.includes(selectedFile.type)) {
+      setIsDragging(false);
+      toast.error('O formato da imagem deve ser .jpg, .jpeg ou .png!');
+      return;
+    }
+
+    setIsDragging(false);
+
+    try {
+      const filename = await submitImage(selectedFile);
+
+      setMessage({
+        from: 'user',
+        imageUrl: `https://${process.env.NEXT_PUBLIC_S3_DOMAIN}/${filename}`,
+      });
+
+      await submitMessage('imagem');
+    } catch (error) {
+      toast.error('Ocorreu um erro ao enviar a imagem!');
+    }
+  };
+
   return (
     <div className="absolute bottom-4 right-4">
       <PopoverMenu open={open}>
         <PopoverMenuTrigger className="rounded-full p-3" onClick={onOpenChange}>
           <MessageCircle className="text-background size-10 hover:text-white" />
         </PopoverMenuTrigger>
-        <PopoverMenuContent className="mr-4 mb-4 h-[700px] flex flex-1 flex-col justify-between w-[450px] data-[state=closed]:animate-[chat-hide_200ms] data-[state=open]:animate-[chat-show_200ms]">
+        <PopoverMenuContent
+          className="mr-4 mb-4 h-[700px] flex flex-1 flex-col justify-between w-[450px] data-[state=closed]:animate-[chat-hide_200ms] data-[state=open]:animate-[chat-show_200ms] relative"
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+        >
+          {isDragging && (
+            <div className="size-full bg-background/40 rounded-xl backdrop-blur-sm absolute left-0 top-0 flex flex-1 items-center justify-center flex-col">
+              <Upload className="size-8" />
+              <h1 className="font-bold text-2xl max-w-96 text-center">
+                Solte a midia aqui para ser adicionada
+              </h1>
+            </div>
+          )}
+
           <div className="flex flex-col mt-2 pt-2 px-4 space-y-4 overflow-y-auto">
             {messages.map((message, index) => (
               <ChatbotMessage key={index} {...message} />
@@ -113,13 +187,7 @@ export const Chatbot = () => {
               ref={inputRef}
             />
 
-            <Button
-              variant="toggle"
-              size="toggle"
-              className="inline-flex items-center justify-center rounded-full"
-            >
-              <Paperclip size={24} />
-            </Button>
+            <ChatbotFileManager />
 
             <ChatbotRecorder />
           </Input>
