@@ -1,19 +1,12 @@
-import { IChatbotMessage } from '@/hooks/use-chatbot';
+import { useChatbot } from '@/hooks/use-chatbot';
 import { Bot } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '../ui/button';
+import { IChatbotMessage } from '@/contexts/chatbot';
 
-export interface ChatbotMessageProps extends IChatbotMessage {
-  sendMessage: (input: string) => Promise<void>;
-}
+export const ChatbotMessage = ({ from, text, audioUrl, card }: IChatbotMessage) => {
+  const { submitMessage } = useChatbot();
 
-export const ChatbotMessage = ({
-  from,
-  text,
-  audioUrl,
-  card,
-  sendMessage,
-}: ChatbotMessageProps) => {
   // Message component for the chatbot
   return (
     <div
@@ -62,7 +55,7 @@ export const ChatbotMessage = ({
                   key={index}
                   variant="primary"
                   className="flex-1"
-                  onClick={() => sendMessage(button.value)}
+                  onClick={() => submitMessage(button.value)}
                 >
                   {button.text}
                 </Button>
