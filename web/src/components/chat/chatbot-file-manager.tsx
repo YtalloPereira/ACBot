@@ -17,12 +17,14 @@ export const ChatbotFileManager = () => {
     const selectedFile = files[0];
 
     try {
-      const filename = await submitImage(selectedFile);
+      const { filename, text} = await submitImage(selectedFile);
 
       setMessage({
         from: 'user',
         imageUrl: `https://${process.env.NEXT_PUBLIC_S3_DOMAIN}/${filename}`,
       });
+
+      console.log(text);
 
       await submitMessage('imagem');
     } catch (error) {

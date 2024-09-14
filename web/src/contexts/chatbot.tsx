@@ -1,5 +1,6 @@
 'use client';
 
+import { detectText } from '@/actions/rekognition';
 import { getUploadAudioSignedUrl, getUploadImageSignedUrl } from '@/actions/s3';
 import { convertToMp3 } from '@/utils/convert-to-mp3';
 import { Interactions } from '@aws-amplify/interactions';
@@ -41,7 +42,7 @@ export interface ChatbotProps {
   setIsRecording: (isRecording: boolean) => void;
   submitMessage: (input: string) => Promise<void>;
   submitAudio: (audioUrl: string) => Promise<string>;
-  submitImage: (file: File) => Promise<string>;
+  submitImage: (file: File) => Promise<{ filename: string, text: object }>;
 }
 
 export const ChatbotContext = createContext<ChatbotProps>({} as ChatbotProps);
@@ -138,7 +139,7 @@ export const ChatbotProvider = ({ children }: { children: ReactNode }) => {
       throw new Error('Failed to get signed url');
     }
 
-    setProgress(50);
+    setProgress(33);
 
     const { filename, url } = signedUrlResponse;
 
@@ -148,10 +149,14 @@ export const ChatbotProvider = ({ children }: { children: ReactNode }) => {
       },
     });
 
+    setProgress(66);
+
+    const text = await detectText(filename);
+
     setProgress(100);
 
     setProgress(null);
-    return filename;
+    return { filename, text };
   };
 
   return (
