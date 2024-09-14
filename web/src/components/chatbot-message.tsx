@@ -3,23 +3,23 @@ import { Bot } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from './ui/button';
 
-export type IChatBotMessage = {
+export type IChatbotMessage = {
   from: 'bot' | 'user';
   text?: string;
   audioUrl?: string;
   card?: IResponseCard;
 };
 
-export interface ChatBotMessageProps extends IChatBotMessage {
+export interface ChatbotMessageProps extends IChatbotMessage {
   sendMessage: (input: string) => Promise<void>;
 }
-export const ChatBotMessage = ({
+export const ChatbotMessage = ({
   from,
   text,
   audioUrl,
   card,
   sendMessage,
-}: ChatBotMessageProps) => {
+}: ChatbotMessageProps) => {
   // Message component for the chatbot
   return (
     <div

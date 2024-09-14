@@ -1,5 +1,3 @@
-import { toast } from 'sonner';
-
 let speechRecognition: SpeechRecognition | null = null;
 
 export const startSpeechRecognition = (): Promise<string> => {
@@ -35,9 +33,8 @@ export const startSpeechRecognition = (): Promise<string> => {
     };
 
     // check onerror event to show an error message
-    speechRecognition.onerror = () => {
-      toast.error('Erro ao gravar áudio!');
-      reject(new Error('Erro ao gravar áudio!'));
+    speechRecognition.onerror = (ev) => {
+      reject(ev);
     };
 
     // check onend event to send recognition

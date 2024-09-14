@@ -21,9 +21,8 @@ export const startAudioRecorder = (): Promise<string> => {
       };
 
       // check onerror event to show an error message
-      audioRecorder.onerror = () => {
-        toast.error('Erro ao gravar áudio!');
-        reject(new Error('Erro ao gravar áudio!'));
+      audioRecorder.onerror = (ev) => {
+        reject(ev);
       };
 
       // check onstop event to send the audio url
@@ -35,8 +34,7 @@ export const startAudioRecorder = (): Promise<string> => {
       // start the audio recording
       audioRecorder.start();
     } catch (error) {
-      toast.error('Erro ao acessar o microfone!');
-      reject(new Error('Erro ao acessar o microfone!'));
+      reject(error);
     }
   });
 };

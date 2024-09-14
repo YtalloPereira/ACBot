@@ -1,29 +1,32 @@
 'use client';
 
 import { getUploadAudioSignedUrl } from '@/actions/s3';
+import { startAudioRecorder, stopAudioRecorder } from '@/lib/audio-recorder';
 import { handleInteract } from '@/lib/interactions';
+import { startSpeechRecognition, stopSpeechRecognition } from '@/lib/speech-recognition';
 import { convertToMp3 } from '@/utils/convert-to-mp3';
 import axios from 'axios';
-import { MessageCircle, Paperclip } from 'lucide-react';
+import { MessageCircle, Mic, MicOff, Paperclip } from 'lucide-react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { AudioRecorderWithSpeechRecognition } from './audio-recorder-with-speech-recognition';
-import { ChatBotMessage, IChatBotMessage } from './chatbot-message';
+import { ChatbotMessage, IChatbotMessage } from './chatbot-message';
 import { ChatbotTyping } from './chatbot-typing';
 import { Button } from './ui/button';
 import { Control, Input } from './ui/input';
 import { PopoverMenu, PopoverMenuContent, PopoverMenuTrigger } from './ui/popover-menu';
 
-export const Chatbot = () => {
-  const [open, setOpen] = useState(false);
+import { toast } from 'sonner';
+import { ProgressBar } from './ui/progress';
 
-  const [messages, setMessages] = useState<IChatBotMessage[]>([]);
+export const Chatbot = () => {
+  const [messages, setMessages] = useState<IChatbotMessage[]>([]);
+
+  const [open, setOpen] = useState(false);
   const [botTyping, setBotTyping] = useState(false);
+  const [progress, setProgress] = useState<number | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const [recognition, setRecognition] = useState('');
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
   const scrollToBottom = (behavior: ScrollBehavior) => {
     messagesEndRef.current?.scrollIntoView({ behavior });
@@ -89,11 +92,20 @@ export const Chatbot = () => {
   };
 
   // Function to handle the submission of a recording and recognition
-  const handleSubmitRecordingAndRecognition = useCallback(async () => {
-    if (recognition && audioUrl) {
+  const handleSubmitRecordingAndRecognition = async (
+    recognition: string,
+    audioUrl: string,
+  ) => {
+    try {
+      setProgress(1);
+
       const audioFile = await convertToMp3(audioUrl);
 
+      setProgress(33);
+
       const signedUrlResponse = await getUploadAudioSignedUrl(audioFile.name);
+
+      setProgress(75);
 
       if (signedUrlResponse) {
         const { filename, url } = signedUrlResponse;
@@ -107,6 +119,8 @@ export const Chatbot = () => {
           },
         });
 
+        setProgress(100);
+
         setMessages((prevMessages) => [
           ...prevMessages,
           {
@@ -116,18 +130,55 @@ export const Chatbot = () => {
         ]);
 
         handleSendMensage(recognition);
-        setRecognition('');
-        setAudioUrl(null);
+      }
+    } catch (error) {
+      toast.error('Erro ao enviar a gravação de áudio!');
+    } finally {
+      setProgress(null);
+    }
+  };
+
+  const handleStartRecording = async () => {
+    // Check if the browser supports the SpeechRecognition API
+    const isSpeechRecognitionAvailable =
+      'SpeechRecognition' in window || 'webkitSpeechRecognition' in window;
+
+    if (!isSpeechRecognitionAvailable) {
+      alert('Seu navegador não suporta a gravação de áudio nativa!');
+      return;
+    }
+
+    setIsRecording(true);
+
+    // Start config for speech recognition and audio recorder
+    try {
+      const [recognition, audioUrl] = await Promise.all([
+        startSpeechRecognition(),
+        startAudioRecorder(),
+      ]);
+
+      // Set the recognition and audioUrl
+      handleSubmitRecordingAndRecognition(recognition, audioUrl);
+    } catch (error) {
+      if (error instanceof SpeechRecognitionErrorEvent) {
+        console.error('Error in speech recognition:', error.error);
+      }
+
+      if (error instanceof Event) {
+        console.error('Error in audio recording:', error);
+      } else {
+        console.error('Error:', error);
       }
     }
-  }, [recognition, audioUrl, handleSendMensage]);
+  };
 
-  // Function to handle the submission of a recording and recognition when the recognition and audioUrl are set
-  useEffect(() => {
-    if (recognition && audioUrl) {
-      handleSubmitRecordingAndRecognition();
-    }
-  }, [recognition, audioUrl, handleSubmitRecordingAndRecognition]);
+  const handleStopRecording = () => {
+    // Stop speech recognition and audio recording
+    stopSpeechRecognition();
+    stopAudioRecorder();
+
+    setIsRecording(false);
+  };
 
   const onOpenChange = () => {
     setOpen(!open);
@@ -142,10 +193,16 @@ export const Chatbot = () => {
         <PopoverMenuContent className="mr-4 mb-4 h-[700px] flex flex-1 flex-col justify-between w-[450px] data-[state=closed]:animate-[chat-hide_200ms] data-[state=open]:animate-[chat-show_200ms]">
           <div className="flex flex-col mt-2 pt-2 px-4 space-y-4 overflow-y-auto">
             {messages.map((message, index) => (
-              <ChatBotMessage key={index} sendMessage={handleSendMensage} {...message} />
+              <ChatbotMessage key={index} sendMessage={handleSendMensage} {...message} />
             ))}
 
             {botTyping && <ChatbotTyping />}
+
+            {progress && (
+              <div className="flex items-end justify-end mx-2">
+                <ProgressBar progress={progress} />
+              </div>
+            )}
             <div ref={messagesEndRef} />
           </div>
 
@@ -165,6 +222,7 @@ export const Chatbot = () => {
               className="text-md w-full focus:border-primary rounded-full"
               ref={inputRef}
             />
+
             <Button
               variant="toggle"
               size="toggle"
@@ -172,10 +230,17 @@ export const Chatbot = () => {
             >
               <Paperclip size={24} />
             </Button>
-            <AudioRecorderWithSpeechRecognition
-              onRecognition={setRecognition}
-              onRecording={setAudioUrl}
-            />
+
+            <Button
+              variant="toggle"
+              size="toggle"
+              onClick={!isRecording ? handleStartRecording : handleStopRecording}
+              title={!isRecording ? 'Gravar áudio' : 'Parar gravação'}
+              className="focus-visible:ring-foreground data-[recording=true]:bg-danger data-[recording=true]:hover:bg-danger/90 data-[recording=true]:text-white"
+              data-recording={isRecording}
+            >
+              {!isRecording ? <Mic /> : <MicOff />}
+            </Button>
           </Input>
         </PopoverMenuContent>
       </PopoverMenu>
