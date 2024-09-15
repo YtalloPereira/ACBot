@@ -1,3 +1,4 @@
+const { handleCheckProcessTypesIntent } = require('./controllers/CheckProcessTypesIntent');
 const { handleFallbackIntent } = require('./controllers/FallbackIntent');
 const { handleWelcomeIntent } = require('./controllers/WelcomeIntent');
 const { handleResponse } = require('./lib/responseBuilder');
@@ -11,7 +12,7 @@ module.exports.handler = async (event) => {
   // Encontra a interpretação com a maior confiança
   const highConfidenceInterpretation = event.interpretations.find(
     (interpretation) =>
-      interpretation.nluConfidence && interpretation.nluConfidence >= 0.7
+      interpretation.nluConfidence && interpretation.nluConfidence >= 0.85
   );
 
   if (!highConfidenceInterpretation) {
@@ -24,6 +25,8 @@ module.exports.handler = async (event) => {
   switch (intentName) {
     case 'WelcomeIntent':
       return await handleWelcomeIntent(event);
+    case 'CheckProcessTypesIntent':
+      return await handleCheckProcessTypesIntent(event);
     default:
       return handleResponse(
         event,
