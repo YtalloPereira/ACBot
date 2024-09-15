@@ -12,13 +12,20 @@ module.exports.findProcess = async (id) => {
     },
   };
 
+  // Busca o processo no DynamoDB
   const command = new GetCommand(params);
   const response = await dynamoDBDocClient.send(command);
 
+  // Verifica se o processo não foi encontrado
+  if (!response.Item) {
+    return null;
+  }
 
+  // Obtém as informações do processo do item retornado
   const flow = response.Item.flow;
   const documentsRequired = response.Item.documentsRequired;
 
+  // Formata a mensagem com as informações do processo
   const process = `
     **ID:** ${response.Item.processId}
 
@@ -28,8 +35,12 @@ module.exports.findProcess = async (id) => {
 
     ${flow ? `**Fluxo:** ${flow}` : ''}
 
-    ${documentsRequired ? `**Documentos Necessários:** ${documentsRequired.join('\n')}` : ''}
+    ${
+      documentsRequired
+        ? `**Documentos Necessários:** ${documentsRequired.join('\n')}`
+        : ''
+    }
   `;
 
-  return process
+  return process;
 };

@@ -5,62 +5,90 @@ const { handleResponse } = require('../lib/responseBuilder');
 module.exports.handleCheckProcessTypesIntent = async (event) => {
   const userInput = event.inputTranscript.toLowerCase();
 
-  const { ProcessId } = event.sessionState.intent.slots;
+  const { ProcessId, Confirm } = event.sessionState.intent.slots;
 
-  // Verifica se o usuário quer ver a lista de processos
   switch (true) {
+    // Verifica se o usuário quer ver a lista de processos
     case userInput.includes('lista'):
       try {
+        // Busca a lista de processos acadêmicos
         const processList = await getProcesses();
 
-        return handleResponse(event, 'Close', null, [
-          'Aqui está a lista de processos acadêmicos disponíveis!',
-          processList,
-        ]);
+        // Retorna a lista de processos acadêmicos
+        const msg = 'Aqui está a lista de processos acadêmicos disponíveis!';
+        return handleResponse(event, 'Close', null, [msg, processList]);
       } catch (error) {
         console.error(error);
-        return handleResponse(
-          event,
-          'Close',
-          null,
-          'Desculpe, houve um erro ao consultar os processos, tente novamente.'
-        );
+
+        // Retorna uma mensagem de erro
+        const msg =
+          'Desculpe, houve um erro ao consultar os processos, tente novamente.';
+        return handleResponse(event, 'Close', null, msg);
       }
 
-    case ['específico', 'informações', 'consultar', 'um'].some((key) =>
-      userInput.includes(key)
+    // Verifica se o usuário quer consultar um processo específico
+    case ['específico', 'informações', 'consultar', 'um'].some(
+      (key) => userInput.includes(key) && !ProcessId?.value?.interpretedValue
     ):
+      // Retorna uma mensagem solicitando o slot do número do processo acadêmico
       return handleResponse(event, 'ElicitSlot', 'ProcessId');
 
-    case ProcessId && typeof ProcessId.value.interpretedValue === 'string':
+    // Verifica o número do processo acadêmico e retorna as informações sobre o processo
+    case ProcessId && typeof ProcessId?.value?.interpretedValue === 'string':
+      // Obtém o número do processo acadêmico
       const value = ProcessId.value.interpretedValue.trim();
 
       if (Number(value) && Number(value) > 0) {
         try {
           const process = await findProcess(value);
 
-          return handleResponse(event, 'Close', null, [
-            `Aqui está o processo acadêmico de número **${value}**.`,
-            process,
-          ]);
+          // Limpa o slot do número do processo acadêmico
+          event.sessionState.intent.slots.ProcessId = null;
+
+          // Retorna aviso se o processo não for encontrado
+          if (!process) {
+            const msg = `Desculpe, não encontrei informações sobre o processo acadêmico de número **${value}**.`;
+            return handleResponse(event, 'Close', null, msg);
+          }
+
+          // Retorna as informações do processo acadêmico
+          const msg = `Aqui está o processo acadêmico de número **${value}**.`;
+          return handleResponse(event, 'ElicitSlot', 'Confirm', [msg, process]);
         } catch (error) {
           console.error(error);
-          return handleResponse(
-            event,
-            'Close',
-            null,
-            'Desculpe, houve um erro ao consultar o processo, tente novamente.'
-          );
+
+          // Retorna uma mensagem de erro
+          const msg =
+            'Desculpe, houve um erro ao consultar o processo, tente novamente.';
+          return handleResponse(event, 'Close', null, msg);
         }
       }
 
+    // Verifica se o usuário quer continuar consultando processos ou encerrar a conversa
+    case Confirm && typeof Confirm?.value?.interpretedValue === 'string':
+      // Obtém a confirmação do usuário
+      const confirmValue = Confirm.value.interpretedValue.toLowerCase().trim();
+
+      // Limpa o slot de confirmação
+      event.sessionState.intent.slots.Confirm = null;
+
+      // Verifica se o usuário quer continuar consultando processos
+      if (confirmValue === 'sim') {
+        // Retorna uma mensagem solicitando o slot do número do processo acadêmico para continuar
+        return handleResponse(event, 'ElicitSlot', 'ProcessId');
+      } else {
+        // Retorna uma mensagem de encerramento da conversa
+        const msg = 'Certo, estou aqui para te ajudar quando precisar!';
+        return handleResponse(event, 'Close', null, msg);
+      }
+
     default:
+      // Cria um card de resposta inicial para o usuário escolher uma opção
       const imageResponseCard = {
         contentType: 'ImageResponseCard',
         imageResponseCard: {
           title: 'Veja as opções abaixo para começar!',
           subtitle: 'Selecione uma das opções para obter mais informações:',
-          // imageUrl: 'https://example.com/image.png', // URL da imagem
           buttons: [
             {
               text: 'Ver lista de processos acadêmicos',
@@ -73,13 +101,9 @@ module.exports.handleCheckProcessTypesIntent = async (event) => {
           ],
         },
       };
-      return handleResponse(
-        event,
-        'Close',
-        null,
-        'Certo, posso te ajudar com isso!',
-        imageResponseCard
-      );
+
+      // Retorna o card de resposta
+      const msg = 'Certo, posso te ajudar com isso!';
+      return handleResponse(event, 'Close', null, msg, imageResponseCard);
   }
 };
- 
