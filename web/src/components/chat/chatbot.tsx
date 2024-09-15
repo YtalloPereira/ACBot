@@ -46,6 +46,8 @@ export const Chatbot = () => {
       const input = inputRef.current.value.trim();
 
       setMessage({ from: 'user', text: input });
+      
+      inputRef.current.value = '';
 
       try {
         await submitMessage(input);
@@ -53,7 +55,6 @@ export const Chatbot = () => {
         toast.error('Ocorreu um erro com o chatbot!');
       }
 
-      inputRef.current.value = '';
     }
   };
 

@@ -27,9 +27,8 @@ export const ChatbotMessage = ({
           <span
             className="px-4 py-3 inline-block bg-primary text-white rounded-s-2xl rounded-tr-2xl data-[from=bot]:bg-border/80 data-[from=bot]:text-foreground data-[from=bot]:rounded-r-2xl data-[from=bot]:rounded-bl-none"
             data-from={from}
-          >
-            {text}
-          </span>
+            dangerouslySetInnerHTML={{ __html: text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>') }}
+          />
         )}
 
         {audioUrl && <audio src={audioUrl} controls />}
