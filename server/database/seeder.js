@@ -8,16 +8,16 @@ const { dynamodb } = require('./dynamodb');
 const dynamoDBDocClient = DynamoDBDocumentClient.from(dynamodb);
 
 const sendMultipleItems = async (items) => {
-  items.map(async(item) => {
+  items.map(async (item) => {
     const command = new PutCommand({
       TableName: 'processos',
       Item: item,
     })
-   
+
     const data = await dynamoDBDocClient.send(command);
     console.log('Itens enviados com sucesso:', data);
   })
-  
+
 };
 
 // Exemplo de uso
@@ -31,7 +31,7 @@ const items = [
       "documento(s) comprobatório(s) da necessidade de aceleração, tais como carta de empregabilidade ou comprovante de mudança de domicílio fora do Estado ou Edital de aprovação em curso de pós-graduação ou nomeação para concurso, etc.",
       "declaração de responsabilidade da autenticidade dos documentos (ANEXO III ou IV)"
     ],
-    flow: "CCA > DCAD"
+    flow: "Coordenação de Controle Acadêmico > Diretoria de Cadastros Acadêmicos, Certificação e Diplomação"
   },
   {
     processId: "2",
@@ -82,7 +82,7 @@ const items = [
       "Justificativa documental, tais como carta de empregabilidade ou comprovante de mudança de domicílio fora do Estado ou Edital de aprovação em curso de pós-graduação ou nomeação para cargo em concurso público, etc.",
       "Declaração de responsabilidade da autenticidade dos documentos (ANEXO III ou IV)"
     ],
-    flow: "Coordenação do Curso > DES ou DDE > DG > CCA"
+    flow: "Coordenação do Curso > Departamento de Ensino Superior ou Diretoria de Desenvolvimento do Ensino > Direção geral > Coordenação de Controle Acadêmico"
   },
   {
     processId: "8",
@@ -99,7 +99,7 @@ const items = [
     title: "Cadastro de nome social",
     description: "Pedido de cadastro de nome social.",
     documentsRequired: [],
-    flow: "CCA"
+    flow: "Coordenação de Controle Acadêmico"
   },
   {
     processId: "10",
@@ -120,7 +120,7 @@ const items = [
     title: "Cancelamento voluntário de matrícula de estudante ingressante",
     description: "Pedido voluntário de cancelamento para estudante recém-ingresso na instituição que, por qualquer razão, não deseja mais ocupar a vaga. Considera-se ingressante o estudante que ingressou na instituição há menos de 15 dias corridos, a contar da data de efetivação da matrícula no sistema acadêmico.",
     documentsRequired: [],
-    flow: "CCA"
+    flow: "Coordenação de Controle Acadêmico"
   },
   {
     processId: "12",
@@ -130,7 +130,7 @@ const items = [
       "Documentos comprobatórios de que não possui pendências com os setores Biblioteca, Financeiro e Assistência Estudantil (“Nada consta”)",
       "Declaração de responsabilidade da autenticidade dos documentos (ANEXO III ou IV)"
     ],
-    flow: "Coordenação do Curso > Nada Consta > Coordenação do Curso > CCA"
+    flow: "Coordenação do Curso > Nada Consta > Coordenação do Curso > Coordenação de Controle Acadêmico"
   },
   {
     processId: "13",
@@ -159,7 +159,7 @@ const items = [
       "Cópia da Ata de defesa do TCC",
       "Declaração de responsabilidade da autenticidade dos documentos (ANEXO III)"
     ],
-    flow: "Coordenação do Curso > Nada Consta > Coordenação do curso > CCA > PRPIPG > CCA"
+    flow: "Coordenação do Curso > Nada Consta > Coordenação do curso > Coordenação de Controle Acadêmico > Pró-Reitoria de Pesquisa, Inovação e Pós-Graduação > Coordenação de Controle Acadêmico"
   },
   {
     processId: "15",
@@ -176,7 +176,7 @@ const items = [
       "Documentos comprobatórios de que não possui pendências com os setores Biblioteca, Financeiro e Assistência Estudantil (“Nada consta”)",
       "Declaração de responsabilidade da autenticidade dos documentos (ANEXO III ou IV)"
     ],
-    flow: "Coordenação do curso > NADA CONSTA > Coordenação do curso CCA > DG > CCA > DCAD"
+    flow: "Coordenação do curso > NADA CONSTA > Coordenação do curso Coordenação de Controle Acadêmico > Direção geral > Coordenação de Controle Acadêmico > Diretoria de Cadastros Acadêmicos, Certificação e Diplomação"
   },
   {
     processId: "16",
@@ -190,7 +190,7 @@ const items = [
     title: "Declaração de vínculo com o IF",
     description: "Solicitação de declaração para comprovar vínculo com o Instituto Federal, por exemplo, para fins de participação em atividades como aluno egresso.",
     documentsRequired: [],
-    flow: "CCA"
+    flow: "Coordenação de Controle Acadêmico"
   },
   {
     processId: "18",
@@ -216,7 +216,7 @@ const items = [
       "Comprovante de Quitação Militar (indivíduos do sexo masculino)",
       "Declaração de responsabilidade da autenticidade dos documentos (ANEXO III ou IV)"
     ],
-    flow: "Coordenação do Curso > Secretaria de Educação > Coordenação do Curso > CCA"
+    flow: "Coordenação do Curso > Secretaria de Educação > Coordenação do Curso > Coordenação de Controle Acadêmico"
   },
   {
     processId: "20",
@@ -231,7 +231,7 @@ const items = [
       "Comprovante de Quitação Militar (indivíduos do sexo masculino)",
       "Declaração de responsabilidade da autenticidade dos documentos (ANEXO III ou IV)"
     ],
-    flow: "Coordenação do Curso > CCA"
+    flow: "Coordenação do Curso > Coordenação de Controle Acadêmico"
   },
   {
     processId: "21",
@@ -248,7 +248,7 @@ const items = [
       "Documentos comprobatórios de que não possui pendências com os setores Biblioteca, Financeiro e Assistência Estudantil (“Nada consta”)",
       "Declaração de responsabilidade da autenticidade dos documentos (ANEXO III ou IV)"
     ],
-    flow: "Coordenação do curso > NADA CONSTA > Coordenação do curso > DG > CCA > DCAD"
+    flow: "Coordenação do curso > NADA CONSTA > Coordenação do curso > Direção geral > Coordenação de Controle Acadêmico > Diretoria de Cadastros Acadêmicos, Certificação e Diplomação"
   },
   {
     processId: "22",
@@ -269,7 +269,7 @@ const items = [
       "Documentos comprobatórios de que não possui pendências com os setores Biblioteca, Financeiro e Assistência Estudantil (“Nada consta”)",
       "Declaração de responsabilidade da autenticidade dos documentos (anexo III)"
     ],
-    flow: "Coordenação do Curso > CCA > DCAD"
+    flow: "Coordenação do Curso > Coordenação de Controle Acadêmico > Diretoria de Cadastros Acadêmicos, Certificação e Diplomação"
   },
   {
     processId: "23",
@@ -289,7 +289,7 @@ const items = [
       "Folha de Ponto",
       "Declaração de responsabilidade da autenticidade dos documentos (ANEXO III ou IV)"
     ],
-    flow: "Coordenação do Curso > DDE"
+    flow: "Coordenação do Curso > Diretoria de Desenvolvimento do Ensino"
   },
   {
     processId: "25",
@@ -331,7 +331,7 @@ const items = [
       "Relatório Final de Monitoria",
       "Declaração de responsabilidade da autenticidade dos documentos (ANEXO III ou IV)"
     ],
-    flow: "Coordenação do Curso > DDE > CCA"
+    flow: "Coordenação do Curso > Diretoria de Desenvolvimento do Ensino > Coordenação de Controle Acadêmico"
   },
   {
     processId: "29",
@@ -341,7 +341,7 @@ const items = [
       "Documentação, conforme edital",
       "Declaração de responsabilidade da autenticidade dos documentos (ANEXO III ou IV)"
     ],
-    flow: "DDE"
+    flow: "Diretoria de Desenvolvimento do Ensino"
   },
   {
     processId: "30",
@@ -430,7 +430,7 @@ const items = [
       "Documentação específica",
       "Declaração de responsabilidade da autenticidade dos documentos (ANEXO III ou IV)"
     ],
-    flow: "DDE"
+    flow: "Diretoria de Desenvolvimento do Ensino"
   },
   {
     processId: "39",
@@ -494,7 +494,7 @@ const items = [
       "Certidão de Nascimento ou Casamento",
       "Declaração de responsabilidade da autenticidade dos documentos (ANEXO III ou IV)"
     ],
-    flow: "CCA > DCAD"
+    flow: "Coordenação de Controle Acadêmico > Diretoria de Cadastros Acadêmicos, Certificação e Diplomação"
   },
   {
     processId: "45",
@@ -560,7 +560,7 @@ const items = [
       "Declaração de existência de vaga na instituição de destino",
       "Declaração de responsabilidade da autenticidade dos documentos (ANEXO III ou IV)"
     ],
-    flow: "DDE > Coordenação do Curso > NADA CONSTA > Coordenação do Curso > CCA"
+    flow: "Diretoria de Desenvolvimento do Ensino > Coordenação do Curso > NADA CONSTA > Coordenação do Curso > Coordenação de Controle Acadêmico"
   },
   {
     processId: "52",
@@ -570,14 +570,14 @@ const items = [
       "Declaração de existência de vaga na instituição de destino",
       "Declaração de responsabilidade da autenticidade dos documentos (ANEXO III ou IV)"
     ],
-    flow: "DDE > Coordenação do Curso > NADA CONSTA > Coordenação do Curso > CCA"
+    flow: "Diretoria de Desenvolvimento do Ensino > Coordenação do Curso > NADA CONSTA > Coordenação do Curso > Coordenação de Controle Acadêmico"
   },
   {
     processId: "53",
     title: "Transferência para outro curso técnico (transferência interna)",
     description: "Transferência para outro Curso Técnico no âmbito do mesmo Campus.",
     documentsRequired: [],
-    flow: "DDE > Assistência Estudantil > Coordenação do Curso > NADA CONSTA > Coordenação do Curso > CCA"
+    flow: "Diretoria de Desenvolvimento do Ensino > Assistência Estudantil > Coordenação do Curso > NADA CONSTA > Coordenação do Curso > Coordenação de Controle Acadêmico"
   }
 ];
 
