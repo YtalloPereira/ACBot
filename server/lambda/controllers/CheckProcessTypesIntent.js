@@ -47,13 +47,14 @@ module.exports.handleCheckProcessTypesIntent = async (event) => {
 
           // Retorna aviso se o processo não for encontrado
           if (!process) {
-            const msg = `Desculpe, não encontrei informações sobre o processo acadêmico de número **${value}**.`;
+            const msg = `Desculpe, mas o processo acadêmico com ID **${value}** não existe.`;
             return handleResponse(event, 'Close', null, msg);
           }
 
           // Retorna as informações do processo acadêmico
           const msg = `Aqui está o processo acadêmico de número **${value}**.`;
-          return handleResponse(event, 'ElicitSlot', 'Confirm', [msg, process]);
+          const slotMsg = `Você gostaria de consultar outro processo acadêmico?`;
+          return handleResponse(event, 'ElicitSlot', 'Confirm', [msg, process, slotMsg]);
         } catch (error) {
           console.error(error);
 

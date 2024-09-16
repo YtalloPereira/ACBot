@@ -22,8 +22,7 @@ module.exports.findProcess = async (id) => {
   }
 
   // Obtém as informações do processo do item retornado
-  const flow = response.Item.flow;
-  const documentsRequired = response.Item.documentsRequired;
+  const documentsRequired = Array.from(response.Item.documentsRequired);
 
   // Formata a mensagem com as informações do processo
   const process = `
@@ -33,12 +32,12 @@ module.exports.findProcess = async (id) => {
 
     **Descrição:** ${response.Item.description}
 
-    ${flow ? `**Fluxo:** ${flow}` : ''}
+    **Fluxo:** ${response.Item.flow}
 
-    ${
-      documentsRequired
-        ? `**Documentos Necessários:** ${documentsRequired.join('\n')}`
-        : ''
+    **Documentos Necessários:** ${
+      documentsRequired.length
+        ? documentsRequired.join('\n')
+        : 'Nenhum documento necessário.'
     }
   `;
 
