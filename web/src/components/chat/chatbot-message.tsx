@@ -27,17 +27,16 @@ export const ChatbotMessage = ({
   // Message component for the chatbot
   return (
     <div
-      className="flex items-end justify-end data-[from=bot]:justify-start"
+      className="flex items-center justify-end gap-2 data-[from=bot]:justify-start"
       data-from={from}
     >
       <div
-        className="flex flex-col space-y-2 text-md leading-tight max-w-lg mx-2 items-end order-1 data-[from=bot]:items-start data-[from=bot]:order-2"
+        className="text-md leading-tight order-1 bg-primary rounded-s-2xl rounded-tr-2xl data-[from=bot]:rounded-r-2xl data-[from=bot]:rounded-bl-none data-[from=bot]:bg-border/80 px-4 py-3 text-white data-[from=bot]:text-foreground text-pretty break-words max-w-[380px]"
         data-from={from}
       >
         {text && (
           <span
-            className="px-4 py-3 break-words text-pretty max-w-[330px] bg-primary text-white rounded-s-2xl rounded-tr-2xl data-[from=bot]:bg-border/80 data-[from=bot]:text-foreground data-[from=bot]:rounded-r-2xl data-[from=bot]:rounded-bl-none whitespace-pre-line"
-            data-from={from}
+            className="whitespace-pre-line"
             dangerouslySetInnerHTML={{
               __html: text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>'),
             }}
@@ -58,10 +57,7 @@ export const ChatbotMessage = ({
         )}
 
         {card && (
-          <div
-            className="px-4 py-3 inline-block bg-primary text-white rounded-s-2xl rounded-tr-2xl data-[from=bot]:bg-border/80 data-[from=bot]:text-foreground data-[from=bot]:rounded-r-2xl data-[from=bot]:rounded-bl-none"
-            data-from={from}
-          >
+          <>
             {card?.imageUrl && (
               <div className="bg-primary rounded-xl p-2">
                 <Image
@@ -84,31 +80,21 @@ export const ChatbotMessage = ({
                 <Button
                   key={index}
                   variant="primary"
-                  className="flex-1"
+                  className="flex-1 bg-gray-600/70 hover:bg-gray-600"
                   onClick={() => handleSubmit(button.value)}
                 >
                   {button.text}
                 </Button>
               ))}
             </div>
-          </div>
+          </>
         )}
       </div>
 
       {from === 'bot' && (
-        <div className="bg-primary rounded-full p-2">
+        <div className="bg-primary rounded-full p-2 mt-auto">
           <Bot size={24} className="text-white" />
         </div>
-      )}
-
-      {from === 'user' && (
-        <Image
-          src="/no-profile.jpg"
-          alt=""
-          width={40}
-          height={40}
-          className="rounded-full order-2"
-        />
       )}
     </div>
   );

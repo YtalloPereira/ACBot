@@ -15,13 +15,11 @@ html {
 /* Scrollbar track */
 ::-webkit-scrollbar-track {
   background: hsl(var(--input));
-  border-radius: 10px;
 }
 
 /* Scrollbar handle */
 ::-webkit-scrollbar-thumb {
   background: hsl(var(--border));
-  border-radius: 10px;
 }
 
 /* Scrollbar handle on hover */
