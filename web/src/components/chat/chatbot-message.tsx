@@ -2,6 +2,7 @@ import { IChatbotMessage } from '@/contexts/chatbot';
 import { useChatbot } from '@/hooks/use-chatbot';
 import { Bot } from 'lucide-react';
 import Image from 'next/image';
+import { toast } from 'sonner';
 import { Button } from '../ui/button';
 
 export const ChatbotMessage = ({
@@ -11,7 +12,17 @@ export const ChatbotMessage = ({
   imageUrl,
   card,
 }: IChatbotMessage) => {
-  const { submitMessage } = useChatbot();
+  const { setMessage, submitMessage } = useChatbot();
+
+  const handleSubmit = async (value: string) => {
+    setMessage({ from: 'user', text: value });
+
+    try {
+      await submitMessage(value);
+    } catch (error) {
+      toast.error('Ocorreu um erro com o chatbot!');
+    }
+  };
 
   // Message component for the chatbot
   return (
@@ -25,9 +36,11 @@ export const ChatbotMessage = ({
       >
         {text && (
           <span
-            className="px-4 py-3 inline-block bg-primary text-white rounded-s-2xl rounded-tr-2xl data-[from=bot]:bg-border/80 data-[from=bot]:text-foreground data-[from=bot]:rounded-r-2xl data-[from=bot]:rounded-bl-none"
+            className="px-4 py-3 break-words text-pretty max-w-[330px] bg-primary text-white rounded-s-2xl rounded-tr-2xl data-[from=bot]:bg-border/80 data-[from=bot]:text-foreground data-[from=bot]:rounded-r-2xl data-[from=bot]:rounded-bl-none whitespace-pre-line"
             data-from={from}
-            dangerouslySetInnerHTML={{ __html: text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>') }}
+            dangerouslySetInnerHTML={{
+              __html: text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>'),
+            }}
           />
         )}
 
@@ -72,7 +85,7 @@ export const ChatbotMessage = ({
                   key={index}
                   variant="primary"
                   className="flex-1"
-                  onClick={() => submitMessage(button.value)}
+                  onClick={() => handleSubmit(button.value)}
                 >
                   {button.text}
                 </Button>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useChatbot } from '@/hooks/use-chatbot';
+import { validateImage } from '@/utils/validate-image';
 import { MessageCircle, Upload } from 'lucide-react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -46,7 +47,7 @@ export const Chatbot = () => {
       const input = inputRef.current.value.trim();
 
       setMessage({ from: 'user', text: input });
-      
+
       inputRef.current.value = '';
 
       try {
@@ -54,10 +55,10 @@ export const Chatbot = () => {
       } catch (error) {
         toast.error('Ocorreu um erro com o chatbot!');
       }
-
     }
   };
 
+  // Function to handle the interaction with the chatbot on first open chat
   const handleSendInitialMessage = useCallback(async () => {
     try {
       await submitMessage('oi');
@@ -103,22 +104,17 @@ export const Chatbot = () => {
 
     const files = event.dataTransfer.files;
 
+    setIsDragging(false);
+
     if (!files?.length) {
-      setIsDragging(false);
       return;
     }
 
     const selectedFile = files[0];
 
-    const allowedTypes = ['image/jpg', 'image/jpeg', 'image/png'];
-
-    if (!allowedTypes.includes(selectedFile.type)) {
-      setIsDragging(false);
+    if (await validateImage(selectedFile)) {
       toast.error('O formato da imagem deve ser .jpg, .jpeg ou .png!');
-      return;
     }
-
-    setIsDragging(false);
 
     try {
       const filename = await submitImage(selectedFile);
@@ -155,20 +151,27 @@ export const Chatbot = () => {
               </h1>
             </div>
           )}
+          <div>
+            <div className="p-2 border-b flex-1">
+              <h1 className="font-bold text-3xl tracking-wider text-center text-primary font-alt">
+                {process.env.NEXT_PUBLIC_BOT_NAME}
+              </h1>
+            </div>
 
-          <div className="flex flex-col mt-2 pt-2 px-4 space-y-4 overflow-y-auto">
-            {messages.map((message, index) => (
-              <ChatbotMessage key={index} {...message} />
-            ))}
+            <div className="flex flex-col px-2 pt-3 space-y-4 overflow-y-auto h-[590px]">
+              {messages.map((message, index) => (
+                <ChatbotMessage key={index} {...message} />
+              ))}
 
-            {botTyping && <ChatbotTyping />}
+              {botTyping && <ChatbotTyping />}
 
-            {progress && (
-              <div className="flex items-end justify-end mx-2">
-                <ProgressBar progress={progress} />
-              </div>
-            )}
-            <div ref={messagesEndRef} />
+              {progress && (
+                <div className="flex items-end justify-end mx-2">
+                  <ProgressBar progress={progress} />
+                </div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
           </div>
 
           <Input

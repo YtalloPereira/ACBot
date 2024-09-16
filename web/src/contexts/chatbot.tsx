@@ -42,7 +42,7 @@ export interface ChatbotProps {
   setIsRecording: (isRecording: boolean) => void;
   submitMessage: (input: string) => Promise<void>;
   submitAudio: (audioUrl: string) => Promise<string>;
-  submitImage: (file: File) => Promise<{ filename: string, text: object }>;
+  submitImage: (file: File) => Promise<{ filename: string; text: object }>;
 }
 
 export const ChatbotContext = createContext<ChatbotProps>({} as ChatbotProps);

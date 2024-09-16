@@ -21,7 +21,7 @@ export const button = tv({
       icon: 'invisible hover:bg-border/45',
     },
     size: {
-      default: 'text-md py-2.5',
+      default: 'text-md py-2.5 px-2',
       minimal: 'p-1.5 text-sm',
       toggle: 'p-2',
       icon: 'p-1',

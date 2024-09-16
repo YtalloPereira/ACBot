@@ -2,8 +2,8 @@ import { useChatbot } from '@/hooks/use-chatbot';
 import { startAudioRecorder, stopAudioRecorder } from '@/lib/audio-recorder';
 import { startSpeechRecognition, stopSpeechRecognition } from '@/lib/speech-recognition';
 import { Mic, MicOff } from 'lucide-react';
-import { Button } from '../ui/button';
 import { toast } from 'sonner';
+import { Button } from '../ui/button';
 
 export const ChatbotRecorder = () => {
   const { isRecording, setIsRecording, submitAudio, setMessage, submitMessage } =

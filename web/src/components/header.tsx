@@ -83,11 +83,11 @@ export const Header = () => {
     >
       <Link
         href="/"
-        className="font-alt text-primary hover:text-primary/90 text-4xl font-bold outline-none transition-all focus-visible:underline data-[searchbar=open]:hidden"
+        className="font-alt text-primary hover:text-primary/90 text-4xl font-bold outline-none transition-all focus-visible:underline data-[searchbar=open]:hidden tracking-wider"
         title="Página inicial"
         data-searchbar={searchBar ? 'open' : 'closed'}
       >
-        Academic Soon
+        ACSoon
       </Link>
 
       <Input

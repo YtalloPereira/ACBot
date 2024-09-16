@@ -1,4 +1,5 @@
 import { useChatbot } from '@/hooks/use-chatbot';
+import { validateImage } from '@/utils/validate-image';
 import { Paperclip } from 'lucide-react';
 import { ChangeEvent } from 'react';
 import { toast } from 'sonner';
@@ -16,8 +17,12 @@ export const ChatbotFileManager = () => {
 
     const selectedFile = files[0];
 
+    if (await validateImage(selectedFile)) {
+      toast.error('O formato da imagem deve ser .jpg, .jpeg ou .png!');
+    }
+
     try {
-      const { filename, text} = await submitImage(selectedFile);
+      const { filename, text } = await submitImage(selectedFile);
 
       setMessage({
         from: 'user',
