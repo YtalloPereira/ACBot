@@ -1,38 +1,28 @@
+const { handleCheckProcessStatusIntent } = require('./controllers/CheckProcessStatusIntent');
 const { handleCheckProcessTypesIntent } = require('./controllers/CheckProcessTypesIntent');
-const { handleFallbackIntent } = require('./controllers/FallbackIntent');
+const { handleOpenGuidedProcessIntent } = require('./controllers/OpenGuidedProcessIntent');
+const { handleProcessOpeningGuideIntent } = require('./controllers/ProcessOpeningGuideIntent');
 const { handleWelcomeIntent } = require('./controllers/WelcomeIntent');
 const { handleResponse } = require('./lib/responseBuilder');
 
 module.exports.handler = async (event) => {
-  // Verifica se `interpretations` existe e é um array
-  if (!event.interpretations || !Array.isArray(event.interpretations)) {
-    return await handleFallbackIntent(event);
-  }
+  // Captura o nome da intenção
+  const intentName = event.sessionState.intent.name;
 
-  // Encontra a interpretação com a maior confiança
-  const highConfidenceInterpretation = event.interpretations.find(
-    (interpretation) =>
-      interpretation.nluConfidence && interpretation.nluConfidence >= 0.85
-  );
-
-  if (!highConfidenceInterpretation) {
-    return handleFallbackIntent(event);
-  }
-
-  // Processa a intenção correspondente à interpretação de alta confiança
-  const intentName = highConfidenceInterpretation.intent.name;
-
+  // Verifica a intenção e chama o controlador correspondente
   switch (intentName) {
     case 'WelcomeIntent':
       return await handleWelcomeIntent(event);
+    case 'CheckProcessStatusIntent':
+      return await handleCheckProcessStatusIntent(event);
     case 'CheckProcessTypesIntent':
       return await handleCheckProcessTypesIntent(event);
+    case 'OpenGuidedProcessIntent':
+      return await handleOpenGuidedProcessIntent(event);
+    case 'ProcessOpeningGuideIntent':
+      return await handleProcessOpeningGuideIntent(event);
     default:
-      return handleResponse(
-        event,
-        'Close',
-        null,
-        'Desculpe, não consegui processar a sua solicitação.'
-      );
+      const msg = 'Desculpe, não entendi sua solicitação. Pode repetir, por favor?';
+      return handleResponse(event, 'Close', null, msg);
   }
 };
