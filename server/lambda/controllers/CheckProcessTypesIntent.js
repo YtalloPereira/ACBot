@@ -4,12 +4,15 @@ const { handleResponse } = require('../lib/responseBuilder');
 
 module.exports.handleCheckProcessTypesIntent = async (event) => {
   const userInput = event.inputTranscript.toLowerCase();
+  const proposedNextState = event?.proposedNextState;
 
   let { ProcessId, Confirm } = event.sessionState.intent.slots;
 
   const processNumberMatch = userInput.match(/\d+/);
 
+  // Verifica se existe um número do processo acadêmico no input do usuário e não foi interpretado
   if (processNumberMatch && !ProcessId?.value?.interpretedValue) {
+    // Define o número do processo acadêmico no slot ProcessId
     ProcessId = {
       value: {
         interpretedValue: processNumberMatch[0],
@@ -94,6 +97,20 @@ module.exports.handleCheckProcessTypesIntent = async (event) => {
       }
 
     default:
+      // Verifica se existe um próximo estado proposto
+      if (proposedNextState) {
+        // Verifica se o próximo estado proposto é a quarta tentativa e fecha a conversa
+        if (proposedNextState?.prompt?.attempt === 'Retry4') {
+          const msg = 'Não consegui finalizar sua solicitação por falta de informações válidas. Você pode tentar novamente!';
+          return handleResponse(event, 'Close', null, msg);
+        }
+
+        // Retorna uma mensagem solicitando o próximo estado proposto
+        const msg =
+          'Desculpe, isso não é uma resposta válida. Poderia reformular sua mensagem?';
+        return handleResponse(event, 'ElicitSlot', proposedNextState?.dialogAction?.slotToElicit, msg);
+      }
+
       // Cria um card de resposta inicial para o usuário escolher uma opção
       const imageResponseCard = {
         contentType: 'ImageResponseCard',
