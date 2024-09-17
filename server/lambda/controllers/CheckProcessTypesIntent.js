@@ -5,11 +5,21 @@ const { handleResponse } = require('../lib/responseBuilder');
 module.exports.handleCheckProcessTypesIntent = async (event) => {
   const userInput = event.inputTranscript.toLowerCase();
 
-  const { ProcessId, Confirm } = event.sessionState.intent.slots;
+  let { ProcessId, Confirm } = event.sessionState.intent.slots;
+
+  const processNumberMatch = userInput.match(/\d+/);
+
+  if (processNumberMatch && !ProcessId?.value?.interpretedValue) {
+    ProcessId = {
+      value: {
+        interpretedValue: processNumberMatch[0],
+      },
+    };
+  }
 
   switch (true) {
     // Verifica se o usuário quer ver a lista de processos
-    case userInput.includes('lista'):
+    case ['lista', 'todos'].some(key => userInput.includes(key)):
       try {
         // Busca a lista de processos acadêmicos
         const processList = await getProcesses();
@@ -26,7 +36,7 @@ module.exports.handleCheckProcessTypesIntent = async (event) => {
         return handleResponse(event, 'Close', null, msg);
       }
 
-    // Verifica se o usuário quer consultar um processo específico
+    // Verifica se o usuário quer consultar um processo e não inseriu o número do processo
     case ['específico', 'informações', 'consultar', 'um'].some(
       (key) => userInput.includes(key) && !ProcessId?.value?.interpretedValue
     ):
