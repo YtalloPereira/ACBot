@@ -1,9 +1,9 @@
 const { CreateTableCommand } = require('@aws-sdk/client-dynamodb');
 const { dynamodb } = require('./dynamodb');
 
-const createTable = async () => {
-  const command = new CreateTableCommand({
-    TableName: 'processos',
+const createProcessTable = async () => {
+  const processCommand = new CreateTableCommand({
+    TableName: 'processes',
     AttributeDefinitions: [
       {
         AttributeName: 'processId', 
@@ -22,14 +22,41 @@ const createTable = async () => {
     },
   });
 
-  const response = await dynamodb.send(command);
+  const response = await dynamodb.send(processCommand);
+  return response;
+};
+
+const createGuideTable = async () => {
+  const processGuideCommand = new CreateTableCommand({
+    TableName: 'processes-guide',
+    AttributeDefinitions: [
+      {
+        AttributeName: 'guideId', 
+        AttributeType: 'S',
+      },
+    ],
+    KeySchema: [
+      {
+        AttributeName: 'guideId', 
+        KeyType: 'HASH', 
+      },
+    ],
+    ProvisionedThroughput: {
+      ReadCapacityUnits: 1, 
+      WriteCapacityUnits: 1, 
+    },
+  });
+
+  const response = await dynamodb.send(processGuideCommand);
   return response;
 };
 
 (async () => {
   try {
-    const data = await createTable();
-    console.log(data);
+    const processTableData = await createProcessTable();
+    const guideTableData = await createGuideTable();
+    console.log(processTableData);
+    console.log(guideTableData);
   } catch (error) {
     console.error(error);
   }
