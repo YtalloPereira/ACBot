@@ -7,10 +7,10 @@ const { dynamodb } = require('./dynamodb');
 
 const dynamoDBDocClient = DynamoDBDocumentClient.from(dynamodb);
 
-const sendMultipleItems = async (items) => {
+const sendProcessItems = async (items) => {
   items.map(async (item) => {
     const command = new PutCommand({
-      TableName: 'processos',
+      TableName: 'processes',
       Item: item,
     })
 
@@ -20,8 +20,19 @@ const sendMultipleItems = async (items) => {
 
 };
 
-// Exemplo de uso
-// Exemplo de uso
+const sendGeneralGuide = async (generalGuide) => {
+    const command = new PutCommand({
+      TableName: 'processes-guide',
+      Item: generalGuide,
+    })
+
+    const data = await dynamoDBDocClient.send(command);
+    console.log('Guia enviado com sucesso:', data);
+  
+
+};
+
+
 const items = [
   {
     processId: "1",
@@ -581,9 +592,37 @@ const items = [
   }
 ];
 
+const generalGuide = {
+  guideId : "1",
+  content: [
+    "1. Acessar o módulo do SUAP, na aba 'Processo Eletrônico', localizada no lado esquerdo da tela.",
+    "2. Clicar no link 'Requerimentos'.",
+    "3. Clicar no botão 'Adicionar Requerimentos'.",
+    "4. No item 'Tipo de Processo', realizar a busca pela tipologia específica, conforme quadro explicativo em anexo.",
+    "5. No item 'Assunto', preencher a tipologia específica.",
+    "6. No item 'Descrição', preencher a descrição do pedido, acrescentando detalhes que identifiquem categoricamente a solicitação pertinente.",
+    "7. Clicar no botão 'Salvar'.",
+    "8. Caso a tipologia escolhida requeira documentos específicos (ver anexo I), clicar no botão 'Upload de Documento Externo'.",
+    "9. No item 'Arquivo', clicar no botão 'Escolher Arquivo' e adicionar o arquivo em PDF, de forma legível, da documentação exigida pela tipologia.",
+    "10. No item 'Tipo' do documento, clicar no botão 'Buscar' e selecionar de acordo com o tipo do documento a ser inserido.",
+    "11. No item 'Assunto', preencher o assunto a que se refere o nome do documento anexado.",
+    "12. No item 'Nível de Acesso', selecionar 'restrito', para que o documento seja visualizado apenas pelo setor de destino.",
+    "13. No item 'Hipótese legal', selecionar 'Informação pessoal'.",
+    "14. Clicar no botão 'Salvar'.",
+    "15. Clicar no botão 'Gerar Processo Eletrônico'.",
+    "16. No item 'Senha', preencher a senha do SUAP.",
+    "17. No item 'Perfil', selecionar o seu perfil de estudante (matrícula).",
+    "18. A primeira tramitação do processo será automática para o setor de destino especificado no quadro disposto no Anexo II.",
+    "19. Clicar no botão 'Enviar'.",
+    "20. Juntada de documento solicitada durante a tramitação do processo: realizar a juntada de novo documento, conforme for orientado pelo setor onde o processo esteja sob análise, observando a data limite da solicitação da juntada de documentos."
+  ]
+};
+
+
 (async () => {
   try {
-    sendMultipleItems(items);
+    sendProcessItems(items);
+    sendGeneralGuide(generalGuide)
   } catch (error) {
     console.log(error);
   }
