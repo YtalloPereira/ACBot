@@ -6,9 +6,10 @@ module.exports.handleListAllProcessTypesIntent = async (event) => {
     // Busca a lista de processos acadêmicos
     const processList = await getProcesses();
 
-    // Retorna a lista de processos acadêmicos
     const msg = 'Aqui está a lista de processos acadêmicos disponíveis!';
     const slotMsg = 'Você quer ver detalhes sobre algum processo específico?';
+    
+    // Retorna a lista de processos acadêmicos
     return handleResponse(event, 'ElicitSlot', 'Confirm', [
       msg,
       processList,
