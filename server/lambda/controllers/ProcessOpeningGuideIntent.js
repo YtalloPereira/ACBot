@@ -1,5 +1,5 @@
-const { getProcessesGuide } = require('../lib/getProcessesGuide');
-const { handleResponse } = require('../lib/responseBuilder');
+const { getProcessesGuide } = require('../utils/getProcessesGuide');
+const { handleResponse } = require('../utils/responseBuilder');
 
 module.exports.handleProcessOpeningGuideIntent = async (event) => {
   const userInput = event.inputTranscript.toLowerCase();

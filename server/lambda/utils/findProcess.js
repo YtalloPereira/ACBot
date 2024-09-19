@@ -1,8 +1,5 @@
-const { DynamoDBDocumentClient, GetCommand } = require('@aws-sdk/lib-dynamodb');
-
-const { dynamodb } = require('../../database/dynamodb');
-
-const dynamoDBDocClient = DynamoDBDocumentClient.from(dynamodb);
+const { GetCommand } = require('@aws-sdk/lib-dynamodb');
+const { dynamodb, dynamoDBDocClient } = require('../lib/aws');
 
 module.exports.findProcess = async (id) => {
   const params = {

@@ -1,11 +1,5 @@
-const {
-  DynamoDBDocumentClient,
-  PutCommand,
-} = require('@aws-sdk/lib-dynamodb');
-
-const { dynamodb } = require('./dynamodb');
-
-const dynamoDBDocClient = DynamoDBDocumentClient.from(dynamodb);
+const { PutCommand } = require('@aws-sdk/lib-dynamodb');
+const { dynamoDBDocClient } = require('../lambda/lib/aws');
 
 const sendProcessItems = async (items) => {
   items.map(async (item) => {

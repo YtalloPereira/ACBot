@@ -1,5 +1,5 @@
 const { CreateTableCommand } = require('@aws-sdk/client-dynamodb');
-const { dynamodb } = require('./dynamodb');
+const { dynamodb } = require('../lambda/lib/aws');
 
 const createProcessTable = async () => {
   const processCommand = new CreateTableCommand({

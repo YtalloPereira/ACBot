@@ -1,10 +1,10 @@
-const { getProcesses } = require('../lib/getProcesses');
-const { handleResponse } = require('../lib/responseBuilder');
+const { fetchAllProcesses } = require('../utils/fetchAllProcesses');
+const { handleResponse } = require('../utils/responseBuilder');
 
 module.exports.handleListAllProcessTypesIntent = async (event) => {
   try {
     // Busca a lista de processos acadêmicos
-    const processList = await getProcesses();
+    const processList = await fetchAllProcesses();
 
     const msg = 'Aqui está a lista de processos acadêmicos disponíveis!';
     const slotMsg = 'Você quer ver detalhes sobre algum processo específico?';

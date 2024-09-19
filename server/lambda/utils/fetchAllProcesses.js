@@ -1,13 +1,7 @@
-const {
-  DynamoDBDocumentClient,
-  ScanCommand,
-} = require('@aws-sdk/lib-dynamodb');
+const { ScanCommand } = require('@aws-sdk/lib-dynamodb');
+const { dynamoDBDocClient } = require('../lib/aws');
 
-const { dynamodb } = require('../../database/dynamodb');
-
-const dynamoDBDocClient = DynamoDBDocumentClient.from(dynamodb);
-
-module.exports.getProcesses = async () => {
+module.exports.fetchAllProcesses = async () => {
   const params = {
     TableName: 'processos',
   };

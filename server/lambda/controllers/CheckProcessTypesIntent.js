@@ -1,5 +1,5 @@
-const { findProcess } = require('../lib/findProcess');
-const { handleResponse } = require('../lib/responseBuilder');
+const { findProcess } = require('../utils/findProcess');
+const { handleResponse } = require('../utils/responseBuilder');
 
 module.exports.handleCheckProcessTypesIntent = async (event) => {
   const { ProcessId } = event.sessionState.intent.slots;

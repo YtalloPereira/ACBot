@@ -1,4 +1,4 @@
-const { handleResponse } = require("../lib/responseBuilder");
+const { handleResponse } = require('../utils/responseBuilder');
 
 module.exports.handleWelcomeIntent = async (event) => {
   // Captura o atributo de sessão que indica se a mensagem de boas-vindas já foi enviada, definido no lex
