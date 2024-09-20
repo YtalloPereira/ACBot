@@ -22,16 +22,14 @@ export const ChatbotFileManager = () => {
     }
 
     try {
-      const { filename, text } = await submitImage(selectedFile);
+      const filename = await submitImage(selectedFile);
 
       setMessage({
         from: 'user',
         imageUrl: `https://${process.env.NEXT_PUBLIC_S3_DOMAIN}/${filename}`,
       });
 
-      console.log(text);
-
-      await submitMessage('imagem');
+      await submitMessage(filename);
     } catch (error) {
       toast.error('Ocorreu um erro ao enviar a imagem!');
     }

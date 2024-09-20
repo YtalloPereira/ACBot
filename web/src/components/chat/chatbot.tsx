@@ -124,7 +124,7 @@ export const Chatbot = () => {
         imageUrl: `https://${process.env.NEXT_PUBLIC_S3_DOMAIN}/${filename}`,
       });
 
-      await submitMessage('imagem');
+      await submitMessage(filename);
     } catch (error) {
       toast.error('Ocorreu um erro ao enviar a imagem!');
     }

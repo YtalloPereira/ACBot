@@ -1,6 +1,5 @@
 'use client';
 
-import { detectText } from '@/actions/rekognition';
 import { getUploadAudioSignedUrl, getUploadImageSignedUrl } from '@/actions/s3';
 import { convertToMp3 } from '@/utils/convert-to-mp3';
 import { Interactions } from '@aws-amplify/interactions';
@@ -42,7 +41,7 @@ export interface ChatbotProps {
   setIsRecording: (isRecording: boolean) => void;
   submitMessage: (input: string) => Promise<void>;
   submitAudio: (audioUrl: string) => Promise<string>;
-  submitImage: (file: File) => Promise<{ filename: string; text: object }>;
+  submitImage: (file: File) => Promise<string>;
 }
 
 export const ChatbotContext = createContext<ChatbotProps>({} as ChatbotProps);
@@ -64,10 +63,18 @@ export const ChatbotProvider = ({ children }: { children: ReactNode }) => {
       setBotTyping(true);
 
       // Send the message to the chat
-      const response = await Interactions.send({
-        botName: process.env.NEXT_PUBLIC_BOT_NAME as string,
-        message: input,
-      });
+
+      let response;
+
+      try {
+        response = await Interactions.send({
+          botName: process.env.NEXT_PUBLIC_BOT_NAME as string,
+          message: input,
+        });
+      } catch (error) {
+        setBotTyping(false);
+        throw error;
+      }
 
       console.log(response);
 
@@ -123,9 +130,12 @@ export const ChatbotProvider = ({ children }: { children: ReactNode }) => {
       },
     });
 
-    setProgress(100);
+    setProgress(99);
 
-    setProgress(null);
+    setTimeout(async () => {
+      setProgress(null);
+    }, 1000);
+
     return filename;
   };
 
@@ -139,7 +149,7 @@ export const ChatbotProvider = ({ children }: { children: ReactNode }) => {
       throw new Error('Failed to get signed url');
     }
 
-    setProgress(33);
+    setProgress(50);
 
     const { filename, url } = signedUrlResponse;
 
@@ -149,14 +159,13 @@ export const ChatbotProvider = ({ children }: { children: ReactNode }) => {
       },
     });
 
-    setProgress(66);
+    setProgress(99);
 
-    const text = await detectText(filename);
+    setTimeout(async () => {
+      setProgress(null);
+    }, 1000);
 
-    setProgress(100);
-
-    setProgress(null);
-    return { filename, text };
+    return filename;
   };
 
   return (
