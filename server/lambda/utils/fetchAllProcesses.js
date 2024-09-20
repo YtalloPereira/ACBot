@@ -3,7 +3,7 @@ const { dynamoDBDocClient } = require('../lib/aws');
 
 module.exports.fetchAllProcesses = async () => {
   const params = {
-    TableName: 'processos',
+    TableName: 'academic-soon-processes',
   };
 
   // Busca todos os processos no DynamoDB
