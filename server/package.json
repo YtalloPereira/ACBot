@@ -9,8 +9,7 @@
   "scripts": {
     "start": "node --env-file=.env --no-warnings server.js",
     "dev": "nodemon --env-file=.env --no-warnings server.js",
-    "db:migrate": "node --env-file=.env database/migration.js",
-    "db:seed": "node --env-file=.env database/seeder.js"
+    "db:migrate-seed": "node --env-file=.env database/seeder.js"
   },
   "keywords": [],
   "dependencies": {

@@ -1,9 +1,9 @@
 const { GetCommand } = require('@aws-sdk/lib-dynamodb');
-const { dynamodb, dynamoDBDocClient } = require('../lib/aws');
+const { dynamoDBDocClient } = require('../lib/aws');
 
 module.exports.findProcess = async (id) => {
   const params = {
-    TableName: 'processos',
+    TableName: `${process.env.RESOURCE_PREFIX}-processes`,
     Key: {
       processId: id,
     },
@@ -22,7 +22,7 @@ module.exports.findProcess = async (id) => {
   const documentsRequired = Array.from(response.Item.documentsRequired);
 
   // Formata a mensagem com as informações do processo
-  const process = `
+  const result = `
     **ID:** ${response.Item.processId}
 
     **Título:** ${response.Item.title}
@@ -38,5 +38,5 @@ module.exports.findProcess = async (id) => {
     }
   `;
 
-  return process;
+  return result;
 };

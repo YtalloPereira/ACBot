@@ -11,8 +11,6 @@ module.exports.handleCheckProcessTypesIntent = async (event) => {
     event.sessionState.intent.slots.ProcessId = null;
     event.sessionState.intent.slots.Confirm = null;
 
-    // event.proposedNextState.prompt = {};
-
     try {
       const process = await findProcess(value);
 
@@ -32,6 +30,7 @@ module.exports.handleCheckProcessTypesIntent = async (event) => {
         slotMsg,
       ]);
     } catch (error) {
+      console.log(error);
       // Retorna uma mensagem de erro
       const msg =
         'Desculpe, houve um erro ao consultar o processo, tente novamente.';

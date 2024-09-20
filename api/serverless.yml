@@ -19,9 +19,6 @@ provider:
         - s3:PutObject
       Resource:
         - arn:aws:s3:::${env:RESOURCE_PREFIX}/*
-    - Effect: Allow
-      Action:
-        - rekognition:DetectText
       Resource: '*'
     - Effect: Allow
       Action:
@@ -69,21 +66,17 @@ functions:
           authorizer: 
             name: cognitoAuthorizer
 
-  detectImageText:
-    handler: controllers/detectImageText.handler
-    events:
-      - httpApi:
-          path: /v1/images/detect-text
-          method: post
-          authorizer: 
-            name: cognitoAuthorizer
-
 resources:
   Resources:
     S3Bucket:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${env:RESOURCE_PREFIX}
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          IgnorePublicAcls: true
+          BlockPublicPolicy: false
+          RestrictPublicBuckets: false
 
     S3BucketPolicy:
       Type: AWS::S3::BucketPolicy
@@ -94,8 +87,7 @@ resources:
             - Effect: Allow
               Action: s3:GetObject
               Resource: arn:aws:s3:::${env:RESOURCE_PREFIX}/*
-              Principal:
-                Service: amplify.amazonaws.com
+              Principal: '*'
 
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
@@ -174,3 +166,31 @@ resources:
           Ref: 'CognitoIdentityPool'
         Roles:
           authenticated: !GetAtt CognitoAuthRole.Arn
+    
+    ProcessesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${env:RESOURCE_PREFIX}-processes
+        AttributeDefinitions:
+          - AttributeName: processId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: processId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    GuidesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${env:RESOURCE_PREFIX}-guides
+        AttributeDefinitions:
+          - AttributeName: keyGuide
+            AttributeType: S
+        KeySchema:
+          - AttributeName: keyGuide
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
