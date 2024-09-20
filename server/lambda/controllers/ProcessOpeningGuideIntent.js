@@ -1,11 +1,31 @@
+const { answerQuestion } = require('../utils/answerQuestion');
 const { getGuide } = require('../utils/findGuide');
 const { handleResponse } = require('../utils/responseBuilder');
 
 module.exports.handleProcessOpeningGuideIntent = async (event) => {
-  const userInput = event.inputTranscript.toLowerCase();
+  const { Question } = event.sessionState.intent.slots;
+  
+    if(Question){
+      const question = Question.value.interpretedValue;
+      
+      event.sessionState.intent.slots.Question = null;
+      event.sessionState.intent.slots.Confirm = null;
 
-  // Verifica se o usuário quer ver o passo a passo de como abrir um processo
-  if (['passo', 'a'].some(key => userInput.includes(key))) {
+      try {
+        const processGuide = await getGuide('requeriment-guide');
+        const answer = await answerQuestion(processGuide, question);
+
+        const slotMsg = 'Você ainda têm alguma dúvida?';
+        return handleResponse(event, 'ElicitSlot', 'Confirm', [answer, slotMsg]);
+        
+      } catch (error) {
+        console.log(error);
+        const msg =
+        'Desculpe, houve um erro ao responder sua pergunta, tente novamente.';
+        return handleResponse(event, 'Close', null, msg);
+      }
+    }
+
     try {
       // Busca o tutorial no DynamoDB
       const processGuide = await getGuide('requeriment-guide');
@@ -23,9 +43,6 @@ module.exports.handleProcessOpeningGuideIntent = async (event) => {
         'Desculpe, houve um erro ao consultar os processos, tente novamente.';
       return handleResponse(event, 'Close', null, msg);
     }
-  }
-
-  // Caso o input não corresponda ao esperado
-  return handleResponse(event, 'Close', null, 'Não entendi seu pedido.');
+  
 };
 
