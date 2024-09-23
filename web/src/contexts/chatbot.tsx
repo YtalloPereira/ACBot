@@ -130,15 +130,16 @@ export const ChatbotProvider = ({ children }: { children: ReactNode }) => {
       },
     });
 
-    setProgress(99);
+    setProgress(100);
 
     setTimeout(async () => {
       setProgress(null);
-    }, 1000);
+    }, 300);
 
     return filename;
   };
 
+  // Function to handle the submission of an image
   const submitImage = async (file: File) => {
     setProgress(1);
 
@@ -163,7 +164,7 @@ export const ChatbotProvider = ({ children }: { children: ReactNode }) => {
 
     setTimeout(async () => {
       setProgress(null);
-    }, 1000);
+    }, 300);
 
     return filename;
   };

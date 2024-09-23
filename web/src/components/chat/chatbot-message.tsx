@@ -31,15 +31,17 @@ export const ChatbotMessage = ({
       data-from={from}
     >
       <div
-        className="text-md leading-tight order-1 bg-primary data-[isImage=true]:bg-background rounded-s-2xl rounded-tr-2xl data-[from=bot]:rounded-r-2xl data-[from=bot]:rounded-bl-none data-[from=bot]:bg-border/80 px-4 py-3 text-white data-[from=bot]:text-foreground break-words max-w-[380px]"
+        className="text-md leading-tight order-1 bg-primary data-[file=true]:bg-background rounded-s-2xl rounded-tr-2xl data-[from=bot]:rounded-r-2xl data-[from=bot]:rounded-bl-none data-[from=bot]:bg-border/80 px-4 py-3 text-white data-[from=bot]:text-foreground break-words max-w-[380px]"
         data-from={from}
-        data-isImage={imageUrl ? 'true' : 'false'}
+        data-file={imageUrl || audioUrl ? true : false}
       >
         {text && (
           <span
             className="whitespace-pre-line"
             dangerouslySetInnerHTML={{
-              __html: text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>'),
+              __html: text
+                .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+                .replace(/(?<!\*)\*(?!\*)/g, '•'),
             }}
           />
         )}

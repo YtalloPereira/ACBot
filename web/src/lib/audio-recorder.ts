@@ -1,13 +1,12 @@
-import { toast } from 'sonner';
-
 let audioRecorder: MediaRecorder | null = null;
 let audioChunks: Blob[] = [];
+let stream: MediaStream | null = null;
 
 export const startAudioRecorder = (): Promise<string> => {
   return new Promise(async (resolve, reject) => {
     try {
       // create stream from the user's microphone
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
       // create a new instance of the MediaRecorder with stream
       audioRecorder = new MediaRecorder(stream);
@@ -29,6 +28,11 @@ export const startAudioRecorder = (): Promise<string> => {
       audioRecorder.onstop = () => {
         const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
         resolve(URL.createObjectURL(audioBlob));
+
+        if (stream) {
+          stream.getTracks().forEach((track) => track.stop());
+          stream = null;
+        }
       };
 
       // start the audio recording

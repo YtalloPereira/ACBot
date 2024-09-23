@@ -48,7 +48,7 @@ export const ChatbotFileManager = () => {
       />
       <label
         htmlFor="image"
-        title="Selecione ou arraste e solte um arquivo"
+        title="Selecione um arquivo"
         className="cursor-pointer p-2 rounded-full outline-none transition-all focus-visible:ring-1 active:transition-none bg-border/60 hover:bg-border hover:ring-primary focus-visible:ring-primary active:bg-border/80 disabled:bg-border/50 data-[disabled=true]:bg-border/50 data-[disabled=true]:cursor-not-allowed"
         data-disabled={botTyping || isRecording || progress !== null}
       >

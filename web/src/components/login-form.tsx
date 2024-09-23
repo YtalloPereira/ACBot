@@ -2,8 +2,8 @@
 
 import { Control, Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/use-auth';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { AuthError, fetchUserAttributes, signIn } from '@aws-amplify/auth';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, XCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -16,6 +16,7 @@ import {
   AlertDialogDescription,
   AlertDialogOverlay,
   AlertDialogTitle,
+  IDialog,
 } from './ui/alert-dialog';
 import { Button } from './ui/button';
 import { Loading } from './ui/loading';
