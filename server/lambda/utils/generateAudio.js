@@ -107,3 +107,34 @@ module.exports.saveAudioUrlToDynamoDB = async (hash, audioUrl) => {
     throw new Error('Erro ao salvar a URL no DynamoDB');
   }
 };
+
+// Função para integração com Amazon Lex
+module.exports.handleLexRequest = async (event) => {
+  try {
+    const phrase = event.inputTranscript;  // Frase recebida do Lex
+    const hash = crypto.createHash('sha256').update(phrase).digest('hex');
+
+    let audioUrl = await this.checkAudioExists(hash);
+
+    if (!audioUrl) {
+      const filePath = await this.generateAudio(phrase);
+      audioUrl = await this.uploadAudioToS3(filePath, hash);
+      await this.saveAudioUrlToDynamoDB(hash, audioUrl);
+    }
+
+    return {
+      sessionAttributes: event.sessionAttributes,
+      dialogAction: {
+        type: 'Close',
+        fulfillmentState: 'Fulfilled',
+        message: {
+          contentType: 'PlainText',
+          content: `O áudio gerado pode ser acessado em: ${audioUrl}`,
+        },
+      },
+    };
+  } catch (error) {
+    console.error('Erro ao processar requisição do Lex', error);
+    throw new Error('Erro ao processar requisição do Lex');
+  }
+};
