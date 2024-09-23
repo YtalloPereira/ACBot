@@ -2,6 +2,32 @@ const { GetCommand, PutCommand } = require('@aws-sdk/lib-dynamodb');
 const { dynamoDBDocClient, polly, s3 } = require('../lib/aws');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
+
+// Função principal que orquestra todo o processo
+module.exports.processPhrase = async (phrase) => {
+  // Cria o hash da frase
+  const hash = crypto.createHash('sha256').update(phrase).digest('hex');
+
+  // Verifica se o áudio já existe no DynamoDB
+  let audioUrl = await this.checkAudioExists(hash);
+
+  if (audioUrl) {
+    return audioUrl;  // Retorna a URL existente
+  }
+
+  // Gera o áudio com Polly
+  const filePath = await this.generateAudio(phrase);
+
+  // Faz o upload do áudio no S3
+  audioUrl = await this.uploadAudioToS3(filePath, hash);
+
+  // Salva a URL no DynamoDB
+  await this.saveAudioUrlToDynamoDB(hash, audioUrl);
+
+  // Retorna a URL gerada
+  return audioUrl;
+};
 
 module.exports.checkAudioExists = async (hash) => {
   const params = {
@@ -64,7 +90,6 @@ module.exports.uploadAudioToS3 = async (filePath, hash) => {
   }
 };
 
-// Função para salvar a URL do áudio no DynamoDB
 module.exports.saveAudioUrlToDynamoDB = async (hash, audioUrl) => {
   const params = {
     TableName: `${process.env.RESOURCE_PREFIX}-audios`,
