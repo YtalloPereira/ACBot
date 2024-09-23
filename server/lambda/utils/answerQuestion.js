@@ -4,7 +4,7 @@ const { bedrock } = require('../lib/aws');
 module.exports.answerQuestion = async (text, question) => {
   // Cria um prompt para perguntar ao modelo de linguagem
   const prompt = `
-    Interprete o seguinte texto e responda a questão fornecida:
+    Interprete o seguinte texto e responda a pergunta fornecida:
  
     Texto:
     "${text}"
@@ -13,11 +13,16 @@ module.exports.answerQuestion = async (text, question) => {
     "${question}"
  
     Formato de resposta:
-    1. A resposta deve estar em **português do Brasil**.
-    2. Use \\n para indicar quebras de linha.
-    3. Utilize **negrito** para destacar termos importantes na resposta.
+      A resposta deve estar em **português do Brasil**.
+      Use \n para indicar quebras de linha.
+      Utilize **negrito** para destacar termos importantes na resposta.
  
-    Responda de forma clara e objetiva.`;
+    A resposta deve estar de forma clara e objetiva.
+    
+    Se o usuário não fornecer uma pergunta válida mediante o texto fornecido, 
+    você deve informar a ele esta mensagem: "Desculpe, sua pergunta está fora do contexto.
+    
+    Não acrescente mais texto à resposta caso a pergunta não esteja relacionada ao texto fornecido.`;
 
   // Cria um comando para invocar o modelo de linguagem com o prompt e outros parâmetros
   const command = new InvokeModelCommand({
@@ -25,9 +30,9 @@ module.exports.answerQuestion = async (text, question) => {
     body: JSON.stringify({
       inputText: prompt,
       textGenerationConfig: {
-        temperature: 0.5,
-        topP: 0.9,
-        maxTokenCount: 512,
+        temperature: 0.4,
+        topP: 0.8,
+        maxTokenCount: 1024,
       },
     }),
     contentType: 'application/json',
