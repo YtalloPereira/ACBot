@@ -1,32 +1,26 @@
 const { GetCommand, PutCommand } = require('@aws-sdk/lib-dynamodb');
-const { dynamoDBDocClient, polly, s3 } = require('../lib/aws');
+const { dynamoDBDocClient, polly, s3, lexClient } = require('../lib/aws');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
-// Função principal que orquestra todo o processo
 module.exports.processPhrase = async (phrase) => {
-  // Cria o hash da frase
   const hash = crypto.createHash('sha256').update(phrase).digest('hex');
+  
+  try {
+    let audioUrl = await this.checkAudioExists(hash);
 
-  // Verifica se o áudio já existe no DynamoDB
-  let audioUrl = await this.checkAudioExists(hash);
+    if (!audioUrl) {
+      const filePath = await this.generateAudio(phrase);
+      audioUrl = await this.uploadAudioToS3(filePath, hash);
+      await this.saveAudioUrlToDynamoDB(hash, audioUrl);
+    }
 
-  if (audioUrl) {
-    return audioUrl;  // Retorna a URL existente
+    return audioUrl;
+  } catch (error) {
+    console.error(`Erro ao processar a frase: ${phrase}`, error);
+    throw new Error('Erro ao processar a frase e gerar o áudio');
   }
-
-  // Gera o áudio com Polly
-  const filePath = await this.generateAudio(phrase);
-
-  // Faz o upload do áudio no S3
-  audioUrl = await this.uploadAudioToS3(filePath, hash);
-
-  // Salva a URL no DynamoDB
-  await this.saveAudioUrlToDynamoDB(hash, audioUrl);
-
-  // Retorna a URL gerada
-  return audioUrl;
 };
 
 module.exports.checkAudioExists = async (hash) => {
@@ -47,7 +41,7 @@ module.exports.checkAudioExists = async (hash) => {
     
     return null;
   } catch (error) {
-    console.error('Erro ao verificar o hash no DynamoDB', error);
+    console.error(`Erro ao verificar o hash no DynamoDB: ${hash}`, error);
     throw new Error('Erro ao verificar o hash no DynamoDB');
   }
 };
@@ -67,7 +61,7 @@ module.exports.generateAudio = async (text) => {
     
     return filePath;
   } catch (error) {
-    console.error('Erro ao gerar áudio com Polly', error);
+    console.error(`Erro ao gerar áudio com Polly para o texto: ${text}`, error);
     throw new Error('Erro ao gerar áudio com Polly');
   }
 };
@@ -85,7 +79,7 @@ module.exports.uploadAudioToS3 = async (filePath, hash) => {
     const result = await s3.upload(uploadParams).promise();
     return result.Location;
   } catch (error) {
-    console.error('Erro ao fazer upload do áudio no S3', error);
+    console.error(`Erro ao fazer upload do áudio no S3 para o hash: ${hash}`, error);
     throw new Error('Erro ao fazer upload do áudio no S3');
   }
 };
@@ -103,7 +97,7 @@ module.exports.saveAudioUrlToDynamoDB = async (hash, audioUrl) => {
     const command = new PutCommand(params);
     await dynamoDBDocClient.send(command);
   } catch (error) {
-    console.error('Erro ao salvar a URL no DynamoDB', error);
+    console.error(`Erro ao salvar a URL no DynamoDB para o hash: ${hash}`, error);
     throw new Error('Erro ao salvar a URL no DynamoDB');
   }
 };
