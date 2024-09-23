@@ -16,6 +16,7 @@ import {
   AlertDialogDescription,
   AlertDialogOverlay,
   AlertDialogTitle,
+  IDialog,
 } from './ui/alert-dialog';
 import { Button } from './ui/button';
 import { Loading } from './ui/loading';
@@ -91,6 +92,10 @@ export const RegisterForm = () => {
         },
       });
 
+      setTimeout(() => {
+        setDialog({} as IDialog);
+      }, 250);
+
       setConfirmDialog(true);
     } catch (error) {
       if (error instanceof AuthError) {
@@ -113,7 +118,7 @@ export const RegisterForm = () => {
       case 'success':
         setTimeout(() => {
           router.push('/login');
-          setDialog({} as IDialog);
+          setConfirmDialog(false);
         }, 250);
         break;
       case 'danger':
@@ -122,6 +127,7 @@ export const RegisterForm = () => {
     }
   };
 
+  // Function to confirm the user account with the confirmation code
   const handleConfirmCode = async () => {
     try {
       setIsLoading(true);
@@ -159,6 +165,7 @@ export const RegisterForm = () => {
     }
   };
 
+  // Function to resend the confirmation code to the user email
   const handleResendConfirmCode = async () => {
     try {
       await resendSignUpCode({ username: watch('email') });

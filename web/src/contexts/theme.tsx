@@ -3,9 +3,12 @@
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { ReactNode, useCallback, useEffect, useState } from 'react';
 
+export type ITheme = 'light' | 'dark' | 'system';
+
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setTheme] = useState<ITheme>('system');
 
+  // Function to load the theme from the local storage and set it
   const loadTheme = useCallback(async () => {
     const savedTheme = localStorage.getItem('theme') as ITheme | null;
 

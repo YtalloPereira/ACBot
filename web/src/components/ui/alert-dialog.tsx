@@ -3,6 +3,15 @@ import * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog';
 import { ComponentProps } from 'react';
 import { twMerge } from 'tailwind-merge';
 
+export type IDialog = {
+  id?: string;
+  visible: boolean;
+  type: 'success' | 'danger' | 'warning';
+  title: string;
+  description?: string;
+  button_span: string;
+};
+
 interface AlertDialogProps extends ComponentProps<typeof AlertDialogPrimitive.Root> {}
 
 export const AlertDialog = (props: AlertDialogProps) => {
