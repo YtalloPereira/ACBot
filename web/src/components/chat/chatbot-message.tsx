@@ -78,7 +78,10 @@ export const ChatbotMessage = ({
 
             {card?.subtitle && <span>{card.subtitle}</span>}
 
-            <div className="flex w-full flex-col gap-2 mt-2">
+            <div
+              className="flex w-full flex-col gap-2 mt-2 data-[length=2]:flex-row"
+              data-length={card?.buttons?.length}
+            >
               {card?.buttons?.map((button, index) => (
                 <Button
                   key={index}

@@ -1,8 +1,9 @@
 const { answerQuestion } = require('../utils/answerQuestion');
+const { confirmResponseCard } = require('../utils/confirmResponseCard');
 const { findGuide } = require('../utils/findGuide');
 const { handleResponse } = require('../utils/responseBuilder');
 
-module.exports.handleProcessOutComeIntent = async (event) => {
+module.exports.handleProcessOutcomeIntent = async (event) => {
   const { Question } = event.sessionState.intent.slots;
 
   let outcomeGuide;
@@ -28,7 +29,14 @@ module.exports.handleProcessOutComeIntent = async (event) => {
 
       const slotMsg =
         'Você ainda tem alguma dúvida sobre a situação dos processos?';
-      return handleResponse(event, 'ElicitSlot', 'Confirm', [answer, slotMsg]);
+
+      return handleResponse(
+        event,
+        'ElicitSlot',
+        'Confirm',
+        [answer, slotMsg],
+        confirmResponseCard
+      );
     } catch (error) {
       const msg =
         'Desculpe, houve um erro ao responder sua pergunta, tente novamente.';
@@ -41,9 +49,11 @@ module.exports.handleProcessOutComeIntent = async (event) => {
   const slotMsg =
     'Você ainda tem alguma dúvida sobre a situação dos processos?';
 
-  return handleResponse(event, 'ElicitSlot', 'Confirm', [
-    msg,
-    outcomeGuide,
-    slotMsg,
-  ]);
+  return handleResponse(
+    event,
+    'ElicitSlot',
+    'Confirm',
+    [msg, outcomeGuide, slotMsg],
+    confirmResponseCard
+  );
 };

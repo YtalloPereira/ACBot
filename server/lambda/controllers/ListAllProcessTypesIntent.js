@@ -1,3 +1,4 @@
+const { confirmResponseCard } = require('../utils/confirmResponseCard');
 const { fetchAllProcesses } = require('../utils/fetchAllProcesses');
 const { handleResponse } = require('../utils/responseBuilder');
 
@@ -10,11 +11,13 @@ module.exports.handleListAllProcessTypesIntent = async (event) => {
     const slotMsg = 'Você quer ver detalhes sobre algum processo específico?';
 
     // Retorna a lista de processos acadêmicos
-    return handleResponse(event, 'ElicitSlot', 'Confirm', [
-      msg,
-      processList,
-      slotMsg,
-    ]);
+    return handleResponse(
+      event,
+      'ElicitSlot',
+      'Confirm',
+      [msg, processList, slotMsg],
+      confirmResponseCard
+    );
   } catch (error) {
     // Retorna uma mensagem de erro
     const msg =

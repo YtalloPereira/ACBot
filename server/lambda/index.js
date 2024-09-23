@@ -1,7 +1,15 @@
-const { handleCheckProcessTypesIntent } = require('./controllers/CheckProcessTypesIntent');
-const { handleListAllProcessTypesIntent } = require('./controllers/ListAllProcessTypesIntent');
-const { handleProcessOpeningGuideIntent } = require('./controllers/ProcessOpeningGuideIntent');
-const { handleProcessOutComeIntent } = require('./controllers/ProcessOutcomeIntent');
+const {
+  handleCheckProcessTypesIntent,
+} = require('./controllers/CheckProcessTypesIntent');
+const {
+  handleListAllProcessTypesIntent,
+} = require('./controllers/ListAllProcessTypesIntent');
+const {
+  handleProcessOpeningGuideIntent,
+} = require('./controllers/ProcessOpeningGuideIntent');
+const {
+  handleProcessOutcomeIntent,
+} = require('./controllers/ProcessOutComeIntent');
 const { handleWelcomeIntent } = require('./controllers/WelcomeIntent');
 const { handleResponse } = require('./utils/responseBuilder');
 
@@ -19,8 +27,8 @@ module.exports.handler = async (event) => {
       return await handleProcessOpeningGuideIntent(event);
     case 'WelcomeIntent':
       return await handleWelcomeIntent(event);
-    case 'ProcessOutComeIntent':
-      return await handleProcessOutComeIntent(event);
+    case 'ProcessOutcomeIntent':
+      return await handleProcessOutcomeIntent(event);
     default:
       const msg =
         'Desculpe, não entendi sua solicitação. Pode repetir, por favor?';

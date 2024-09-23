@@ -3,7 +3,7 @@ module.exports.handleResponse = (
   type,
   slotToElicit,
   message,
-  imageResponseCard
+  responseCard
 ) => {
   // Define o estado da intenção
   const intentState = type === 'Delegate' ? 'ReadyForFulfillment' : 'Fulfilled';
@@ -25,8 +25,8 @@ module.exports.handleResponse = (
   }
 
   // Adiciona o card de resposta ao array de mensagens
-  if (imageResponseCard) {
-    messages.push(imageResponseCard);
+  if (responseCard) {
+    messages.push(responseCard);
   }
 
   // Retorna o objeto de resposta

@@ -1,4 +1,5 @@
 const { answerQuestion } = require('../utils/answerQuestion');
+const { confirmResponseCard } = require('../utils/confirmResponseCard');
 const { findGuide } = require('../utils/findGuide');
 const { handleResponse } = require('../utils/responseBuilder');
 
@@ -28,7 +29,13 @@ module.exports.handleProcessOpeningGuideIntent = async (event) => {
 
       const slotMsg =
         'Você ainda tem alguma dúvida sobre como abrir um processo?';
-      return handleResponse(event, 'ElicitSlot', 'Confirm', [answer, slotMsg]);
+      return handleResponse(
+        event,
+        'ElicitSlot',
+        'Confirm',
+        [answer, slotMsg],
+        confirmResponseCard
+      );
     } catch (error) {
       const msg =
         'Desculpe, houve um erro ao responder sua pergunta, tente novamente.';
@@ -40,9 +47,11 @@ module.exports.handleProcessOpeningGuideIntent = async (event) => {
   const msg = 'Aqui está o passo a passo para abrir um processo!';
   const slotMsg = 'Você ainda tem alguma dúvida sobre como abrir um processo?';
 
-  return handleResponse(event, 'ElicitSlot', 'Confirm', [
-    msg,
-    processGuide,
-    slotMsg,
-  ]);
+  return handleResponse(
+    event,
+    'ElicitSlot',
+    'Confirm',
+    [msg, processGuide, slotMsg],
+    confirmResponseCard
+  );
 };

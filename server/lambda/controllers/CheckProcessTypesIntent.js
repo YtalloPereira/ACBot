@@ -1,3 +1,4 @@
+const { confirmResponseCard } = require('../utils/confirmResponseCard');
 const { findProcess } = require('../utils/findProcess');
 const { handleResponse } = require('../utils/responseBuilder');
 
@@ -24,11 +25,13 @@ module.exports.handleCheckProcessTypesIntent = async (event) => {
       const slotMsg = 'Você quer consultar outro processo acadêmico?';
 
       // Retorna as informações do processo acadêmico
-      return handleResponse(event, 'ElicitSlot', 'Confirm', [
-        msg,
-        process,
-        slotMsg,
-      ]);
+      return handleResponse(
+        event,
+        'ElicitSlot',
+        'Confirm',
+        [msg, process, slotMsg],
+        confirmResponseCard
+      );
     } catch (error) {
       // Retorna uma mensagem de erro
       const msg =
