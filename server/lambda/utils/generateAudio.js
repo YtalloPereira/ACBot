@@ -1,121 +1,85 @@
 const { GetCommand, PutCommand } = require('@aws-sdk/lib-dynamodb');
-const { dynamoDBDocClient, polly, s3, lexClient } = require('../lib/aws');
-const fs = require('fs');
-const path = require('path');
+const { polly, dynamoDBDocClient, s3 } = require('../lib/aws');
 const crypto = require('crypto');
 
-module.exports.processPhrase = async (phrase) => {
-  const hash = crypto.createHash('sha256').update(phrase).digest('hex');
-  
-  try {
-    let audioUrl = await this.checkAudioExists(hash);
-
-    if (!audioUrl) {
-      const filePath = await this.generateAudio(phrase);
-      audioUrl = await this.uploadAudioToS3(filePath, hash);
-      await this.saveAudioUrlToDynamoDB(hash, audioUrl);
-    }
-
-    return audioUrl;
-  } catch (error) {
-    console.error(`Erro ao processar a frase: ${phrase}`, error);
-    throw new Error('Erro ao processar a frase e gerar o áudio');
-  }
+// Função para gerar o hash da frase
+const generateHash = (phrase) => {
+  return crypto.createHash('sha256').update(phrase).digest('hex');
 };
 
-module.exports.checkAudioExists = async (hash) => {
+// Função para salvar o áudio no S3
+const uploadToS3 = async (audioBuffer, key) => {
   const params = {
-    TableName: `${process.env.RESOURCE_PREFIX}-audios`,
-    Key: {
-      phraseHash: hash,
-    },
+    Bucket: process.env.S3_BUCKET_NAME,
+    Key: key,
+    Body: audioBuffer,
+    ContentType: 'audio/mpeg',
+    ACL: 'public-read',
   };
 
-  try {
-    const command = new GetCommand(params);
-    const response = await dynamoDBDocClient.send(command);
-    
-    if (response.Item) {
-      return response.Item.audioUrl;
-    }
-    
-    return null;
-  } catch (error) {
-    console.error(`Erro ao verificar o hash no DynamoDB: ${hash}`, error);
-    throw new Error('Erro ao verificar o hash no DynamoDB');
-  }
+  const result = await s3.upload(params).promise();
+  return result.Location; // Retorna a URL do arquivo no S3
 };
 
-module.exports.generateAudio = async (text) => {
+// Função para salvar no DynamoDB
+const saveToDynamoDB = async (hash, s3Url) => {
   const params = {
-    Text: text,
-    OutputFormat: 'mp3',
-    VoiceId: 'Joanna',
-  };
-
-  try {
-    const audioStream = await polly.synthesizeSpeech(params).promise();
-    
-    const filePath = path.join('/tmp', 'audio.mp3');
-    fs.writeFileSync(filePath, audioStream.AudioStream);
-    
-    return filePath;
-  } catch (error) {
-    console.error(`Erro ao gerar áudio com Polly para o texto: ${text}`, error);
-    throw new Error('Erro ao gerar áudio com Polly');
-  }
-};
-
-module.exports.uploadAudioToS3 = async (filePath, hash) => {
-  const fileStream = fs.createReadStream(filePath);
-
-  const uploadParams = {
-    Bucket: process.env.AUDIO_BUCKET,
-    Key: `audios/${hash}.mp3`,
-    Body: fileStream,
-  };
-
-  try {
-    const result = await s3.upload(uploadParams).promise();
-    return result.Location;
-  } catch (error) {
-    console.error(`Erro ao fazer upload do áudio no S3 para o hash: ${hash}`, error);
-    throw new Error('Erro ao fazer upload do áudio no S3');
-  }
-};
-
-module.exports.saveAudioUrlToDynamoDB = async (hash, audioUrl) => {
-  const params = {
-    TableName: `${process.env.RESOURCE_PREFIX}-audios`,
+    TableName: process.env.DYNAMODB_TABLE_NAME,
     Item: {
       phraseHash: hash,
-      audioUrl: audioUrl,
+      audioUrl: s3Url,
     },
   };
 
-  try {
-    const command = new PutCommand(params);
-    await dynamoDBDocClient.send(command);
-  } catch (error) {
-    console.error(`Erro ao salvar a URL no DynamoDB para o hash: ${hash}`, error);
-    throw new Error('Erro ao salvar a URL no DynamoDB');
-  }
+  await dynamoDBDocClient.send(new PutCommand(params));
 };
 
-// Função para integração com Amazon Lex
-module.exports.handleLexRequest = async (event) => {
+// Função principal de geração e verificação do áudio
+const generateOrFetchAudio = async (phrase) => {
+  const hash = generateHash(phrase);
+
+  // Verificar no DynamoDB
+  const getParams = {
+    TableName: process.env.DYNAMODB_TABLE_NAME,
+    Key: { phraseHash: hash },
+  };
+
+  const data = await dynamoDBDocClient.send(new GetCommand(getParams));
+
+  // Se o áudio já foi gerado, retorna a URL
+  if (data.Item) {
+    return data.Item.audioUrl;
+  }
+
+  // Se não, gera o áudio com Polly
+  const pollyParams = {
+    OutputFormat: 'mp3',
+    Text: phrase,
+  };
+
+  const pollyResponse = await polly.synthesizeSpeech(pollyParams).promise();
+  const audioBuffer = pollyResponse.AudioStream;
+
+  // Salva o áudio no S3
+  const s3Key = `audio/${hash}.mp3`;
+  const s3Url = await uploadToS3(audioBuffer, s3Key);
+
+  // Salva no DynamoDB
+  await saveToDynamoDB(hash, s3Url);
+
+  // Retorna a URL do S3
+  return s3Url;
+};
+
+// Função Lambda handler
+module.exports.generateAudio = async (event) => {
   try {
-    const phrase = event.inputTranscript;  // Frase recebida do Lex
-    const hash = crypto.createHash('sha256').update(phrase).digest('hex');
+    const phrase = event.inputTranscript || "Nenhuma frase fornecida";
 
-    let audioUrl = await this.checkAudioExists(hash);
+    // Chama a função para verificar ou gerar o áudio
+    const audioUrl = await generateOrFetchAudio(phrase);
 
-    if (!audioUrl) {
-      const filePath = await this.generateAudio(phrase);
-      audioUrl = await this.uploadAudioToS3(filePath, hash);
-      await this.saveAudioUrlToDynamoDB(hash, audioUrl);
-    }
-
+    // Responde ao Amazon Lex com a URL do áudio gerado
     return {
       sessionAttributes: event.sessionAttributes,
       dialogAction: {
@@ -123,12 +87,22 @@ module.exports.handleLexRequest = async (event) => {
         fulfillmentState: 'Fulfilled',
         message: {
           contentType: 'PlainText',
-          content: `O áudio gerado pode ser acessado em: ${audioUrl}`,
+          content: `Aqui está o link do áudio: ${audioUrl}`,
         },
       },
     };
   } catch (error) {
-    console.error('Erro ao processar requisição do Lex', error);
-    throw new Error('Erro ao processar requisição do Lex');
+    console.error("Erro ao gerar o áudio:", error);
+    return {
+      sessionAttributes: event.sessionAttributes,
+      dialogAction: {
+        type: 'Close',
+        fulfillmentState: 'Failed',
+        message: {
+          contentType: 'PlainText',
+          content: 'Houve um erro ao processar sua solicitação.',
+        },
+      },
+    };
   }
 };
