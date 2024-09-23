@@ -1,5 +1,5 @@
 const { answerQuestion } = require('../utils/answerQuestion');
-const { getGuide } = require('../utils/findGuide');
+const { findGuide } = require('../utils/findGuide');
 const { handleResponse } = require('../utils/responseBuilder');
 
 module.exports.handleProcessOutComeIntent = async (event) => {
@@ -12,7 +12,7 @@ module.exports.handleProcessOutComeIntent = async (event) => {
         event.sessionState.intent.slots.Confirm = null;
 
         try {
-            const outcomeGuide = await getGuide('outcome-guide');
+            const outcomeGuide = await findGuide('outcome-guide');
             const answer = await answerQuestion(outcomeGuide, question);
 
             const slotMsg = 'Você ainda têm alguma dúvida?';
@@ -28,7 +28,7 @@ module.exports.handleProcessOutComeIntent = async (event) => {
 
     try {
         // Busca o tutorial no DynamoDB
-        const outcomeGuide = await getGuide('outcome-guide');
+        const outcomeGuide = await findGuide('outcome-guide');
 
         // Retorna o tutorial para abrir um processo
         const msg = 'Aqui está o passo a passo dos efeitos resultantes dos requerimentos!';

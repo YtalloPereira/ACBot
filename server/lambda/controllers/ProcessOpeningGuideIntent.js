@@ -1,5 +1,5 @@
 const { answerQuestion } = require('../utils/answerQuestion');
-const { getGuide } = require('../utils/findGuide');
+const { findGuide } = require('../utils/findGuide');
 const { handleResponse } = require('../utils/responseBuilder');
 
 module.exports.handleProcessOpeningGuideIntent = async (event) => {
@@ -12,7 +12,7 @@ module.exports.handleProcessOpeningGuideIntent = async (event) => {
       event.sessionState.intent.slots.Confirm = null;
 
       try {
-        const processGuide = await getGuide('requeriment-guide');
+        const processGuide = await findGuide('requeriment-guide');
         const answer = await answerQuestion(processGuide, question);
 
         const slotMsg = 'Você ainda têm alguma dúvida?';
@@ -28,7 +28,7 @@ module.exports.handleProcessOpeningGuideIntent = async (event) => {
 
     try {
       // Busca o tutorial no DynamoDB
-      const processGuide = await getGuide('requeriment-guide');
+      const processGuide = await findGuide('requeriment-guide');
 
       // Retorna o tutorial para abrir um processo
       const msg = 'Aqui está o passo a passo para abrir um processo!';

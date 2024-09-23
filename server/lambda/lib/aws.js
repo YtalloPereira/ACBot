@@ -5,7 +5,10 @@ const { BedrockRuntimeClient } = require('@aws-sdk/client-bedrock-runtime');
 const { PollyClient } = require('@aws-sdk/client-polly');
 const { fromIni } = require('@aws-sdk/credential-providers');
 
+// Define o nome do profile para carregar as credenciais ou usa undefined
 const profile = process.env.PROFILE_NAME ?? undefined;
+
+// Cria instâncias dos serviços para acessar os serviços da AWS
 
 const dynamodb = new DynamoDBClient({
   credentials: fromIni({ profile }),
@@ -25,6 +28,7 @@ const polly = new PollyClient({
   credentials: fromIni({ profile }),
 });
 
+// Exporta os serviços para serem utilizados em outros módulos
 module.exports = {
   dynamodb,
   dynamoDBDocClient,

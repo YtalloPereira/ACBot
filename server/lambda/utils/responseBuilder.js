@@ -5,6 +5,7 @@ module.exports.handleResponse = (
   message,
   imageResponseCard
 ) => {
+  // Define o estado da intenção
   const intentState = type === 'Delegate' ? 'ReadyForFulfillment' : 'Fulfilled';
 
   let messages = [];

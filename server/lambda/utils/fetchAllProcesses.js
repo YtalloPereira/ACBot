@@ -2,20 +2,20 @@ const { ScanCommand } = require('@aws-sdk/lib-dynamodb');
 const { dynamoDBDocClient } = require('../lib/aws');
 
 module.exports.fetchAllProcesses = async () => {
-  const params = {
-    TableName: 'academic-soon-processes',
-  };
+  // Cria um comando de scan para buscar todos os processos
+  const command = new ScanCommand({
+    TableName: `${process.env.RESOURCE_PREFIX}-processes`,
+  });
 
-  // Busca todos os processos no DynamoDB
-  const command = new ScanCommand(params);
+  // Envia comando para buscar todos os processos no DynamoDB
   const response = await dynamoDBDocClient.send(command);
 
-  // Ordena os processos por ID
+  // Ordena os processos no DynamoDB
   const sortedItems = response.Items.sort(
     (a, b) => Number(a.processId) - Number(b.processId)
   );
 
-  // Mapeia os processos ordenados para um array de strings formatadas para exibição
+  // Formata o array para uma string com quebra de linha entre os processos
   return sortedItems
     .map((item) => `**${item.processId}** - ${item.title}`)
     .join('\n');
