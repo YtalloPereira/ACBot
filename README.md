@@ -194,7 +194,7 @@ O ACBot está disponível em: [acbot.com.br](https://)
 
 ## 👥 Contribuidores
 
-| [<img loading="lazy" src="https://avatars.githubusercontent.com/u/43382153?v=4" width=115><br><sub>Richard Freitas</sub>](https://github.com/wesleyfreit) |  [<img loading="lazy" src="https://avatars.githubusercontent.com/u/91287544?v=4" width=115><br><sub>João Emmanuel</sub>](https://github.com/KBSSA1) |  [<img loading="lazy" src="https://avatars.githubusercontent.com/u/92949630?v=4" width=115><br><sub>Geraldo Mendes</sub>](https://github.com/Geraldomendes) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/113937488?v=4" width=115><br><sub>Ytallo Pereira</sub>](https://github.com/YtalloPereira) 
+| [<img loading="lazy" src="https://avatars.githubusercontent.com/u/92949630?v=4" width=115><br><sub>Geraldo Mendes</sub>](https://github.com/Geraldomendes) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/91287544?v=4" width=115><br><sub>João Emmanuel</sub>](https://github.com/KBSSA1) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/43382153?v=4" width=115><br><sub>Richard Freitas</sub>](https://github.com/wesleyfreit) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/113937488?v=4" width=115><br><sub>Ytallo Pereira</sub>](https://github.com/YtalloPereira) 
 | :---: | :---: | :---: | :---: |
 
 ***
