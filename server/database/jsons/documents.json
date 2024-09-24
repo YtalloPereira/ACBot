@@ -1,0 +1,99 @@
+[
+  {
+    "key": "CPF",
+    "tags": [
+      "CPF", 
+      "COMPROVANTE", 
+      "INSCRIÇÃO", 
+      "NÚMERO", "NOME", 
+      "NASCIMENTO"
+    ]
+  },
+  {
+    "key": "RG",
+    "tags": [
+      "FEDERATIVA",
+      "BRASIL",
+      "ESTADO",
+      "NOME",
+      "EXPEDIÇÃO",
+      "REGISTRO",
+      "GERAL",
+      "NASCIMENTO",
+      "CPF",
+      "NATURALIDADE",
+      "ORIGEM",
+      "IDENTIDADE"
+    ]
+  },
+  {
+    "key": "CNH",
+    "tags": [
+      "HABILITAÇÃO",
+      "ACC",
+      "EMISSÃO",
+      "VAILIDADE",
+      "NACIONAL",
+      "IDENTIDADE",
+      "HAB",
+      "REGISTRO",
+      "CPF",
+      "FILIAÇÃO",
+      "NACIONALIDADE",
+      "TRÂNSITO"
+    ]
+  },
+  {
+    "key": "TITULO ELEITOR",
+    "tags": [
+      "NOME",
+      "ELEITOR",
+      "NASCIMENTO",
+      "INSCRIÇÃO",
+      "ZONA",
+      "SEÇÃO",
+      "MUNICÍPIO",
+      "TRE"
+    ]
+  },
+  {
+    "key": "CERTIDAO DE NASCIMENTO",
+    "tags": [
+      "CERTIDÃO",
+      "NASCIMENTO",
+      "DATA",
+      "DIA",
+      "MÊS",
+      "ANO",
+      "HORA",
+      "MUNICÍPIO",
+      "UF",
+      "LOCAL",
+      "SEXO",
+      "FILIAÇÃO",
+      "AVÓS"
+    ]
+  },
+  {
+    "key": "CTPS",
+    "tags": [
+      "CARTEIRA",
+      "TRABALHO",
+      "PREVIDÊNCIA",
+      "SOCIAL",
+      "PIS",
+      "PASEP",
+      "NÚMERO",
+      "SÉRIE",
+      "UF",
+      "ASSINATURA",
+      "TITULAR",
+      "POLEGAR",
+      "NOME",
+      "FILIAÇÃO",
+      "CPF",
+      "RG",
+      "NASCIMENTO"
+    ]
+  }
+]

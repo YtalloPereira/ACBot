@@ -1,8 +1,9 @@
 const { CreateTableCommand } = require('@aws-sdk/client-dynamodb');
 const { dynamodb } = require('../lambda/lib/aws');
- 
+
 const createProcessTable = async () => {
-  const processCommand = new CreateTableCommand({
+  // Comando para criar a tabela de processos
+  const command = new CreateTableCommand({
     TableName: `${process.env.RESOURCE_PREFIX}-processes`,
     AttributeDefinitions: [
       {
@@ -21,10 +22,13 @@ const createProcessTable = async () => {
       WriteCapacityUnits: 1,
     },
   });
-  await dynamodb.send(processCommand);
+
+  await dynamodb.send(command);
 };
+
 const createGuideTable = async () => {
-  const processGuideCommand = new CreateTableCommand({
+  // comando para criar a tabela de guias
+  const command = new CreateTableCommand({
     TableName: `${process.env.RESOURCE_PREFIX}-guides`,
     AttributeDefinitions: [
       {
@@ -43,13 +47,50 @@ const createGuideTable = async () => {
       WriteCapacityUnits: 1,
     },
   });
-  await dynamodb.send(processGuideCommand);
+
+  await dynamodb.send(command);
 };
+
+const createDocumentsTable = async () => {
+  // Comando para criar a tabela de documentos
+  const command = new CreateTableCommand({
+    TableName: `${process.env.RESOURCE_PREFIX}-documents`,
+    AttributeDefinitions: [
+      {
+        AttributeName: 'key',
+        AttributeType: 'S',
+      },
+    ],
+    KeySchema: [
+      {
+        AttributeName: 'key',
+        KeyType: 'HASH',
+      },
+    ],
+    ProvisionedThroughput: {
+      ReadCapacityUnits: 1,
+      WriteCapacityUnits: 1,
+    },
+  });
+
+  await dynamodb.send(command);
+};
+
 (async () => {
   try {
-    await Promise.all([createProcessTable(),createGuideTable()]);
+    // Cria as tabelas de processos, guias e documentos
+    await Promise.all([
+      createProcessTable(),
+      createGuideTable(),
+      createDocumentsTable(),
+    ]);
+
+    console.log('Tabelas criadas com sucesso!');
   } catch (error) {
+    if (error.name === 'ResourceInUseException') {
+      console.log('As tabelas já existem.');
+      return;
+    }
     console.error(error);
   }
 })();
- 

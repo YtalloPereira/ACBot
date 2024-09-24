@@ -18,6 +18,13 @@ module.exports.findGuide = async (key) => {
     return null;
   }
 
-  // Retorna o conteúdo do guia
-  return response.Item.content.join('\n');
+  // Ordena os processos no DynamoDB
+  const sortedItems = response.Item.content.sort(
+    (a, b) => Number(a.id) - Number(b.id)
+  );
+
+  // Formata o array para uma string com quebra de linha entre os passos do guia
+  return sortedItems
+    .map((item) => `${item.id ? `**${item.id}** - ` : ''}${item.description}`)
+    .join('\n');
 };
