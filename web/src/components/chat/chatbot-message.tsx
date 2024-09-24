@@ -1,5 +1,6 @@
 import { IChatbotMessage } from '@/contexts/chatbot';
 import { useChatbot } from '@/hooks/use-chatbot';
+import { formatMessage } from '@/lib/format-message';
 import { Bot } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'sonner';
@@ -39,9 +40,7 @@ export const ChatbotMessage = ({
           <span
             className="whitespace-pre-line"
             dangerouslySetInnerHTML={{
-              __html: text
-                .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
-                .replace(/(?<!\*)\*(?!\*)/g, '•'),
+              __html: formatMessage(text),
             }}
           />
         )}
