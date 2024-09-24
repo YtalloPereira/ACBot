@@ -8,15 +8,17 @@ module.exports.handleListAllProcessTypesIntent = async (event) => {
     const processList = await fetchAllProcesses();
 
     const msg = 'Aqui está a lista de processos acadêmicos disponíveis!';
-    const slotMsg = 'Você quer ver detalhes sobre algum processo específico?';
+    const responseCard = confirmResponseCard(
+      'Você quer ver detalhes sobre algum processo específico?'
+    );
 
     // Retorna a lista de processos acadêmicos
     return handleResponse(
       event,
       'ElicitSlot',
       'Confirm',
-      [msg, processList, slotMsg],
-      confirmResponseCard
+      [msg, processList],
+      responseCard
     );
   } catch (error) {
     // Retorna uma mensagem de erro

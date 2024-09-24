@@ -21,16 +21,18 @@ module.exports.handleCheckProcessTypesIntent = async (event) => {
         return handleResponse(event, 'Close', null, msg);
       }
 
-      const msg = `Aqui está o processo acadêmico de número **${value}**.`;
-      const slotMsg = 'Você quer consultar outro processo acadêmico?';
+      const msg = `Aqui está o processo acadêmico de ID **${value}**.`;
+      const responseCard = confirmResponseCard(
+        'Você quer consultar outro processo acadêmico?'
+      );
 
       // Retorna as informações do processo acadêmico
       return handleResponse(
         event,
         'ElicitSlot',
         'Confirm',
-        [msg, process, slotMsg],
-        confirmResponseCard
+        [msg, process],
+        responseCard
       );
     } catch (error) {
       // Retorna uma mensagem de erro

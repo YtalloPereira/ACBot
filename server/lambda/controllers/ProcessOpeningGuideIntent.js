@@ -26,15 +26,16 @@ module.exports.handleProcessOpeningGuideIntent = async (event) => {
 
     try {
       const answer = await answerQuestion(processGuide, question);
+      const responseCard = confirmResponseCard(
+        'Você ainda tem alguma dúvida sobre como abrir um processo?'
+      );
 
-      const slotMsg =
-        'Você ainda tem alguma dúvida sobre como abrir um processo?';
       return handleResponse(
         event,
         'ElicitSlot',
         'Confirm',
-        [answer, slotMsg],
-        confirmResponseCard
+        answer,
+        responseCard
       );
     } catch (error) {
       const msg =
@@ -45,13 +46,15 @@ module.exports.handleProcessOpeningGuideIntent = async (event) => {
 
   // Retorna o tutorial para abrir um processo
   const msg = 'Aqui está o passo a passo para abrir um processo!';
-  const slotMsg = 'Você ainda tem alguma dúvida sobre como abrir um processo?';
+  const responseCard = confirmResponseCard(
+    'Você ainda tem alguma dúvida sobre como abrir um processo?'
+  );
 
   return handleResponse(
     event,
     'ElicitSlot',
     'Confirm',
-    [msg, processGuide, slotMsg],
-    confirmResponseCard
+    [msg, processGuide],
+    responseCard
   );
 };
