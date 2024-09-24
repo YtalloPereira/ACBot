@@ -4,14 +4,14 @@ const { randomUUID } = require('crypto');
 
 const s3 = new S3Client();
 
-module.exports.makeSignedUrl = async (filename) => {
+module.exports.makeSignedUrl = async (filename, folder) => {
   // Generate a unique object key
   const objectKey = randomUUID().concat(`_${filename.replace(/ /g, '_')}`);
 
   // Create a PutObjectCommand
   const command = new PutObjectCommand({
     Bucket: process.env.RESOURCE_PREFIX,
-    Key: objectKey, // Generate a random UUID to avoid collisions
+    Key: `uploads/${folder}/${objectKey}`,
   });
 
   // Generate a signed URL for the client to upload the file

@@ -7,7 +7,7 @@ module.exports.detectImageText = async (filename) => {
     Image: {
       S3Object: {
         Bucket: process.env.RESOURCE_PREFIX,
-        Name: filename,
+        Name: `uploads/images/${filename}`,
       },
     },
   });

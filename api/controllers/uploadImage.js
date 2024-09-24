@@ -20,7 +20,7 @@ module.exports.handler = async (event) => {
     }
 
     // Generate a signed URL for the client to upload the file
-    const { objectKey, signedUrl } = await makeSignedUrl(filename);
+    const { objectKey, signedUrl } = await makeSignedUrl(filename, 'images');
 
     return makeResponse(200, {
       filename: objectKey,
