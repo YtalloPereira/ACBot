@@ -4,12 +4,12 @@ O projeto **ACBot** foi desenvolvido como parte das sprints 9 e 10 do programa d
 
 ## 📖 Índice
 
-- [📝 Descrição do Projeto](#-acbot)
-- [🏛️ Arquitetura](#️-arquitetura)
-- [⚙️ Tecnologias Utilizadas](#️-tecnologias-utilizadas)
 - [🔎 Sobre o Chatbot](#-sobre-o-chatbot)
   - [Descrição do projeto](#descrição-do-projeto)
   - [Justificativa](#justificativa)
+  - [Principais funcionalidades](#️-principais-funcionalidades)
+- [🏛️ Arquitetura](#️-arquitetura)
+- [⚙️ Tecnologias Utilizadas](#️-tecnologias-utilizadas)
 - [🚀 Execução e Utilização](#-execução-e-utilização)
   - [Pré-requisitos](#pré-requisitos)
   - [Passos de inicialização](#passos-de-inicialização)
@@ -21,44 +21,72 @@ O projeto **ACBot** foi desenvolvido como parte das sprints 9 e 10 do programa d
 - [👥 Contribuidores](#-contribuidores)
 
 
-## 🏛️ Principais Funcionalidades
+## 🔎 Sobre o Chatbot
+
+### Descrição do projeto
+O projeto consiste em um bot de assistência para processos acadêmicos, desenvolvido para alunos do IFPB, com o objetivo de simplificar e otimizar o gerenciamento de processos acadêmicos. Ele proporciona orientação sobre procedimentos e análise de documentos, utilizando tecnologias avançadas de inteligência artificial para oferecer um suporte eficiente e prático nas seguintes áreas:
+
+### Justificativa
+A importância deste projeto reside na simplificação dos processos acadêmicos, melhorando a eficiência e a experiência do usuário. O bot visa reduzir a carga administrativa tanto para os alunos quanto para o corpo administrativo. Com a utilização de tecnologias como reconhecimento de imagem e IA generativa, o bot pode oferecer respostas mais personalizadas e seguras, garantindo que todas as etapas sejam executadas corretamente.
+
+## Principais Funcionalidades
 
 - **Integração com Lex:** Um chatbot que se comunica com o usuário, processando textos e mensagens.
 - **Reconhecimento de imagens:** Utiliza o Amazon Rekognition para validação de documentos.
 - **Conversão de texto para áudio:** Com o Amazon Polly, o bot gera áudio a partir de respostas textuais.
 - **Consulta de processos acadêmicos:** Integração com DynamoDB para armazenar e consultar tipos de processos acadêmicos.
 
-
 ## 🏛️ Arquitetura
 
 ### Visão Geral
-O sistema será composto pelos seguintes componentes principais:
-- **Amazon Lex:** Para gerenciamento das interações e compreensão de texto.
-- **Amazon Polly:** Para conversão de texto em fala, facilitando o acesso para alunos com deficiência visual ou preferências auditivas.
-- **Amazon S3:** Para armazenamento seguro de documentos enviados pelos alunos.
-- **AWS Lambda:** Para gerenciamento da lógica do bot, integrando diferentes serviços e processos.
-- **Amazon Rekognition:** Para análise de imagens, reconhecimento facial e verificação de documentos enviados.
-- **Amazon Bedrock:** Para fornecer respostas avançadas e personalizadas utilizando IA generativa.
-- **Amazon Transcribe:** Para transcrição de mensagens de voz enviadas pelos usuários, ampliando a acessibilidade.
-- **Amazon DynamoDB:** Para armazenamento de dados estruturados relacionados a processos acadêmicos e interações do bot.
+
+O sistema é composto pelos seguintes componentes principais:
+
+- **React:** Frontend do sistema, onde os alunos interagem com o bot por meio de uma interface web moderna, responsiva e intuitiva.
+- **Axios:** Utilizado para fazer chamadas HTTP no frontend, facilitando a comunicação com as APIs do backend.
+- **AWS Amplify:** Facilita a integração do frontend com os serviços AWS, simplificando a autenticação, o armazenamento e a interação com as APIs do sistema.
+- **Amazon Cognito:** Gerencia a autenticação e autorização dos usuários (alunos), garantindo que somente usuários autenticados tenham acesso a determinadas funcionalidades.
+- **Amazon Lex:** Gerencia as interações e a compreensão de texto, oferecendo um chatbot inteligente.
+- **Amazon Polly:** Converte texto em fala, facilitando o acesso para alunos com deficiência visual ou preferências auditivas.
+- **Amazon S3:** Armazena com segurança documentos enviados pelos alunos, como documentos pessoais.
+- **AWS Lambda:** Gerencia a lógica do bot, integrando diferentes serviços e processos.
+- **Amazon Rekognition:** Analisa e verifica os documentos enviados.
+- **Amazon Bedrock:** Fornece respostas avançadas e personalizadas utilizando IA generativa.
+- **Amazon DynamoDB:** Armazena dados estruturados relacionados aos processos acadêmicos e interações do bot.
 
 ### Detalhamento dos Componentes
-- **Frontend:** Interface onde os alunos interagem com o bot, podendo ser web ou mobile. Esta interface deve ser responsiva e intuitiva, facilitando a navegação e o uso.
-- **Backend:** AWS Lambda gerencia a lógica do bot, coordenando chamadas aos serviços como Amazon Lex, Rekognition, e Bedrock, processando dados e executando funções conforme necessário.
-- **Armazenamento:** Amazon S3 garante o armazenamento seguro dos documentos, com políticas de acesso configuradas para proteger dados sensíveis.
-- **Processamento de Linguagem Natural:** Amazon Lex para processamento de linguagem natural, ajudando o bot a entender e responder a consultas textuais. Amazon Bedrock complementa essa capacidade, oferecendo respostas avançadas baseadas em contexto e aprendizado de máquina.
-- **Reconhecimento de Imagens e Análise de Documentos:** Amazon Rekognition é utilizado para análise de imagens enviadas, como fotos de documentos, para verificação de identidade e extração de informações.
-- **Transcrição de Voz:** Amazon Transcribe converte mensagens de voz enviadas pelos usuários em texto, ampliando as formas de interação.
-- **Notificações:** Serviços de notificação para envio de e-mails ou mensagens sobre o status dos processos, assegurando que os alunos sejam informados de qualquer atualização relevante.
-###
 
-![acbot-architecture](./assets/images/ACBot-architecture.png)
+- **Frontend (React + Amplify):** A interface de usuário (UI) foi construída usando **React**, que oferece uma experiência interativa e moderna. **AWS Amplify** foi utilizado para facilitar a integração do frontend com os serviços da AWS, especialmente na autenticação (Cognito) e chamadas de API (Axios).
+  
+  - **Axios** foi usado para realizar requisições HTTP entre o frontend e o backend (AWS Lambda), manipulando respostas e erros de forma eficiente.
+  
+- **Autenticação e autorização (Cognito):** **Amazon Cognito** gerencia o controle de usuários e permissões. Ele autentica os usuários e gera tokens de autorização para garantir o acesso seguro às APIs e dados.
 
-###
-***
+- **Backend (AWS Lambda):** **Lambda** gerencia toda a lógica do bot, integrando-se com serviços como Amazon Lex, Rekognition, Bedrock e Polly. Ele também coordena as chamadas de outros serviços AWS, como o armazenamento de dados no DynamoDB e o armazenamento de documentos no S3.
 
-O diagrama mostra como o usuário interage com a interface de chat, que envia solicitações para o Amazon Lex. O Amazon Lex processa essas solicitações, chama funções Lambda para manipulação de dados, verifica identidades usando o Amazon Rekognition, armazena documentos no Amazon S3, e utiliza o Amazon Bedrock para fornecer respostas avançadas. Finalmente, o Amazon Polly pode ser utilizado para converter texto em fala, criando uma resposta mais interativa para o usuário.
+- **Armazenamento (S3):** **Amazon S3** é utilizado para armazenar documentos enviados pelos alunos.
 
+- **Processamento de linguagem natural (Lex + Bedrock):** O **Amazon Lex** gerencia a compreensão e processamento de linguagem natural, permitindo que o bot responda a perguntas textuais. O **Amazon Bedrock** complementa o Lex, utilizando IA generativa para fornecer respostas mais avançadas e personalizadas.
+
+- **Reconhecimento de imagens (Rekognition):** O **Amazon Rekognition** é utilizado para análise de imagens, como fotos de documentos, verificando legibilidade e autenticidade.
+
+- **Armazenamento de dados (DynamoDB):** **Amazon DynamoDB** armazena dados estruturados sobre os processos acadêmicos e interações dos alunos com o sistema.
+
+### Fluxo de Interação
+
+1. O aluno acessa o frontend do sistema, construído com **React**, e faz login utilizando o **Amazon Cognito**.
+2. Após autenticado, o aluno interage com o bot, enviando perguntas, documentos ou mensagens de voz. O **Amazon Lex** processa as interações textuais e de voz e, se necessário, chama o **AWS Lambda** para processar a lógica exigida.
+3. Se o aluno enviar um documento, o **Amazon Rekognition** é chamado para verificar a autenticidade e a legibilidade do arquivo.
+4. O bot pode utilizar o **Amazon Polly** para converter respostas textuais em áudio, facilitando a interação para alunos com necessidades especiais.
+5. Os dados e documentos dos alunos são armazenados de forma segura no **Amazon S3** e **Amazon DynamoDB**.
+6. O frontend se comunica com o backend utilizando **Axios**, enviando dados e recebendo respostas.
+7. **AWS Amplify** facilita a conexão entre o frontend e os serviços AWS, como o Cognito e as APIs de backend.
+
+### Diagrama de arquitetura
+
+<p align="center">
+  <img src="./assets/images/ACBot-architecture.png" alt="Diagrama de Arquitetura Atualizada">
+</p>
 
 ## ⚙️ Tecnologias Utilizadas
 
@@ -80,14 +108,6 @@ O diagrama mostra como o usuário interage com a interface de chat, que envia so
 15. **[Trello](https://trello.com)** - *Gerenciamento das tarefas do projeto, organizando o fluxo de trabalho da equipe.*
 16. **[AWS CLI](https://aws.amazon.com/cli/)** - *Interface de linha de comando para gerenciar serviços AWS, facilitando a automação de tarefas.*
 
-## 🔎 Sobre o Chatbot
-
-### Descrição do projeto
-O projeto consiste em um bot de assistência para processos acadêmicos, desenvolvido para alunos do IFPB, com o objetivo de simplificar e otimizar o gerenciamento de processos acadêmicos. Ele proporciona orientação sobre procedimentos e análise de documentos, utilizando tecnologias avançadas de inteligência artificial para oferecer um suporte eficiente e prático nas seguintes áreas:
-
-### Justificativa
-A importância deste projeto reside na simplificação dos processos acadêmicos, melhorando a eficiência e a experiência do usuário. O bot visa reduzir a carga administrativa tanto para os alunos quanto para o corpo administrativo. Com a utilização de tecnologias como reconhecimento de imagem e IA generativa, o bot pode oferecer respostas mais personalizadas e seguras, garantindo que todas as etapas sejam executadas corretamente.
-
 ## 🤖 Intents do Chatbot
 
 ### 1. **WelcomeIntent**
@@ -95,7 +115,6 @@ A importância deste projeto reside na simplificação dos processos acadêmicos
    - **Exemplos de frases:**
      - "Olá"
      - "Oi"
-     - "Bom dia"
      - "Quais informações posso obter?"
 
 ### 2. **ProcessOpeningGuideIntent**
@@ -117,19 +136,21 @@ A importância deste projeto reside na simplificação dos processos acadêmicos
      - "Quero informações detalhadas sobre um processo acadêmico."
 
 ### 5. **ProcessOutcomeIntent**
-   - **Descrição:** Verifica a situação e efeitos dos requerimentos.
+   - **Descrição:** Efetua consultas sobre os efeitos resultantes dos requerimentos de processos abertos anteriormente e responde perguntas especificas sobre as informações fornecidas.
    - **Exemplos de frases:**
-     - "**********"
+     - "Como saber a situação do meu processo?"
+     - "Como verificar se meu requerimento foi aceito?"
 
-### 6. **CheckReadabilityIntent**
-   - **Descrição:** Verifica a legibilidade de documentos dos processos.
+### 6. **CheckDocumentLegibilityIntent**
+   - **Descrição:** Verifica a legibilidade de documentos que são usados para abertura de processos.
    - **Exemplos de frases:**
-     - "******?"
+     - "Eu gostaria de verificar a legibilidade de um documento."
+     - "Você pode me ajudar a verificar se meu documento está legível?"
 
 ### 7. **FallbackIntent**
    - **Descrição:** Acionada quando o bot não compreende a solicitação do usuário.
 
-## 🚀 Execução e Utilização
+## 🚀 Execução e utilização
 
 ### Pré-requisitos
 
