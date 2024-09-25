@@ -2,7 +2,7 @@
 
 import { getUploadAudioSignedUrl, getUploadImageSignedUrl } from '@/actions/s3';
 import { convertToMp3 } from '@/utils/convert-to-mp3';
-import { Interactions } from '@aws-amplify/interactions';
+import { Interactions, SendOutput } from '@aws-amplify/interactions';
 import axios from 'axios';
 import { createContext, ReactNode, useCallback, useState } from 'react';
 
@@ -38,6 +38,7 @@ export interface ChatbotProps {
   progress: number | null;
   setProgress: (progress: number | null) => void;
   isRecording: boolean;
+  fileManager: boolean;
   setIsRecording: (isRecording: boolean) => void;
   submitMessage: (input: string) => Promise<void>;
   submitAudio: (audioUrl: string) => Promise<string>;
@@ -48,6 +49,7 @@ export const ChatbotContext = createContext<ChatbotProps>({} as ChatbotProps);
 
 export const ChatbotProvider = ({ children }: { children: ReactNode }) => {
   const [messages, setMessages] = useState<IChatbotMessage[]>([]);
+  const [fileManager, setFileManager] = useState(false);
   const [botTyping, setBotTyping] = useState(false);
   const [progress, setProgress] = useState<number | null>(null);
   const [isRecording, setIsRecording] = useState(false);
@@ -60,11 +62,15 @@ export const ChatbotProvider = ({ children }: { children: ReactNode }) => {
   // Function to send a message to the chatbot and get the bot responses
   const submitMessage = useCallback(
     async (input: string) => {
+      if (!input) {
+        return;
+      }
+
       setBotTyping(true);
 
       // Send the message to the chat
 
-      let response;
+      let response: SendOutput;
 
       try {
         response = await Interactions.send({
@@ -77,6 +83,12 @@ export const ChatbotProvider = ({ children }: { children: ReactNode }) => {
       }
 
       console.log(response);
+
+      // Check if the document type is defined in the chatbot and set the file manager state
+      const documentDefined =
+        response?.sessionState?.sessionAttributes?.documentDefined === 'true';
+
+      setFileManager(documentDefined);
 
       // Get the bot responses
       const botResponses: InteractionsResponse[] | undefined = response.messages;
@@ -179,6 +191,7 @@ export const ChatbotProvider = ({ children }: { children: ReactNode }) => {
         progress,
         setProgress,
         isRecording,
+        fileManager,
         setIsRecording,
         submitMessage,
         submitAudio,

@@ -20,8 +20,15 @@ export const Chatbot = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  const { messages, botTyping, progress, setMessage, submitMessage, submitImage } =
-    useChatbot();
+  const {
+    messages,
+    botTyping,
+    progress,
+    fileManager,
+    setMessage,
+    submitMessage,
+    submitImage,
+  } = useChatbot();
 
   const scrollToBottom = (behavior: ScrollBehavior) => {
     messagesEndRef.current?.scrollIntoView({ behavior });
@@ -137,7 +144,7 @@ export const Chatbot = () => {
           <MessageCircle className="text-background size-10 hover:text-white" />
         </PopoverMenuTrigger>
         <PopoverMenuContent
-          className="mr-4 mb-4 h-[700px] flex flex-1 flex-col justify-between w-[450px] data-[state=closed]:animate-[chat-hide_200ms] data-[state=open]:animate-[chat-show_200ms] relative"
+          className="mr-4 mb-4 h-[700px] flex flex-1 flex-col justify-between w-[450px] data-[state=closed]:animate-[chat-hide_200ms] data-[state=open]:animate-[chat-show_200ms] relative outline-none"
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}
           onDragOver={handleDragOver}
@@ -177,6 +184,7 @@ export const Chatbot = () => {
           <Input
             className="rounded-xl rounded-t-none px-1 py-2 gap-1"
             name="message"
+            data-disabled={botTyping || fileManager || progress !== null}
             id="message"
           >
             <Control
@@ -186,12 +194,12 @@ export const Chatbot = () => {
               placeholder="Digite algo..."
               autoComplete="off"
               autoFocus
+              disabled={botTyping || fileManager || progress !== null}
               onKeyDown={handleSubmit}
-              className="text-md w-full focus:border-primary rounded-full"
               ref={inputRef}
             />
 
-            <ChatbotFileManager />
+            {fileManager && <ChatbotFileManager />}
 
             <ChatbotRecorder />
           </Input>

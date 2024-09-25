@@ -6,8 +6,16 @@ import { toast } from 'sonner';
 import { Button } from '../ui/button';
 
 export const ChatbotRecorder = () => {
-  const { isRecording, setIsRecording, submitAudio, setMessage, submitMessage } =
-    useChatbot();
+  const {
+    isRecording,
+    botTyping,
+    fileManager,
+    progress,
+    setIsRecording,
+    submitAudio,
+    setMessage,
+    submitMessage,
+  } = useChatbot();
 
   // Function to handle submit audio and send message with recognition text
   const handleSubmitAudioAndMensage = async (audioUrl: string, recognition: string) => {
@@ -16,9 +24,10 @@ export const ChatbotRecorder = () => {
 
       setMessage({
         from: 'user',
-        audioUrl: `https://${process.env.NEXT_PUBLIC_S3_DOMAIN}/${filename}`,
+        audioUrl: `https://${process.env.NEXT_PUBLIC_S3_DOMAIN}/uploads/audios/${filename}`,
       });
 
+      console.log('recognition:', typeof recognition);
       await submitMessage(recognition);
     } catch (error) {
       toast.error('Ocorreu um erro ao enviar o áudio!');
@@ -76,6 +85,7 @@ export const ChatbotRecorder = () => {
       title={!isRecording ? 'Gravar áudio' : 'Parar gravação'}
       className="focus-visible:ring-foreground data-[recording=true]:bg-danger data-[recording=true]:hover:bg-danger/90 data-[recording=true]:text-white"
       data-recording={isRecording}
+      disabled={botTyping || fileManager || progress !== null}
     >
       {!isRecording ? <Mic /> : <MicOff />}
     </Button>

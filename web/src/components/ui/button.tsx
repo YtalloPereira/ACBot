@@ -2,7 +2,7 @@ import { ComponentProps } from 'react';
 import { tv, VariantProps } from 'tailwind-variants';
 
 export const button = tv({
-  base: 'flex items-center justify-center rounded-lg outline-none transition-all focus-visible:ring-1 focus-visible:ring-foreground active:transition-none',
+  base: 'flex items-center justify-center rounded-lg outline-none transition-all focus-visible:ring-1 focus-visible:ring-foreground active:transition-none disabled:opacity-60 disabled:pointer-events-none',
 
   variants: {
     variant: {
