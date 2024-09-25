@@ -1,5 +1,6 @@
 const { confirmResponseCard } = require('../utils/confirmResponseCard');
 const { findProcess } = require('../utils/findProcess');
+const { generateAudio } = require('../utils/generateAudio');
 const { handleResponse } = require('../utils/responseBuilder');
 
 module.exports.handleCheckProcessTypesIntent = async (event) => {
@@ -18,7 +19,8 @@ module.exports.handleCheckProcessTypesIntent = async (event) => {
       // Retorna aviso se o processo não for encontrado
       if (!process) {
         const msg = `Desculpe, mas o processo acadêmico com ID **${value}** não existe. Tente novamente.`;
-        return handleResponse(event, 'Close', null, msg);
+        const audioUrl = await generateAudio(msg);
+        return handleResponse(event, 'Close', null, audioUrl);
       }
 
       const msg = `Aqui está o processo acadêmico de ID **${value}**.`;
@@ -38,7 +40,9 @@ module.exports.handleCheckProcessTypesIntent = async (event) => {
       // Retorna uma mensagem de erro
       const msg =
         'Desculpe, houve um erro ao consultar o processo, tente novamente.';
-      return handleResponse(event, 'Close', null, msg);
+
+      const audioUrl = await generateAudio(msg);
+      return handleResponse(event, 'Close', null, audioUrl);
     }
   }
 

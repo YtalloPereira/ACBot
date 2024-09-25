@@ -24,6 +24,8 @@ module.exports.handleListAllProcessTypesIntent = async (event) => {
     // Retorna uma mensagem de erro
     const msg =
       'Desculpe, houve um erro ao consultar os processos, tente novamente.';
-    return handleResponse(event, 'Close', null, msg);
+
+    const audioUrl = await generateAudio(msg);
+    return handleResponse(event, 'Close', null, audioUrl);
   }
 };

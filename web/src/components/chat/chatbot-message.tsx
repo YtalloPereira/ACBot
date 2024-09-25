@@ -32,7 +32,7 @@ export const ChatbotMessage = ({
       data-from={from}
     >
       <div
-        className="text-md leading-tight order-1 bg-primary data-[file=true]:bg-background rounded-s-2xl rounded-tr-2xl data-[from=bot]:rounded-r-2xl data-[from=bot]:rounded-bl-none data-[from=bot]:bg-border/80 px-4 py-3 text-white data-[from=bot]:text-foreground break-words max-w-[380px]"
+        className="text-md leading-tight order-1 bg-primary  rounded-s-2xl rounded-tr-2xl data-[from=bot]:rounded-r-2xl data-[from=bot]:rounded-bl-none data-[from=bot]:data-[file=false]:bg-border/80 data-[file=false]:px-4 data-[file=false]:py-3 text-white data-[from=bot]:text-foreground data-[file=true]:bg-background break-words max-w-[380px]"
         data-from={from}
         data-file={imageUrl || audioUrl ? true : false}
       >

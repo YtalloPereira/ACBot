@@ -102,7 +102,14 @@ export const ChatbotProvider = ({ children }: { children: ReactNode }) => {
       botResponses.map((msg) =>
         setMessage({
           from: 'bot',
-          text: msg.contentType === 'PlainText' ? msg.content : undefined,
+          text:
+            msg.contentType === 'PlainText' && !msg.content?.startsWith('https://')
+              ? msg.content
+              : undefined,
+          audioUrl:
+            msg.contentType === 'PlainText' && msg.content?.startsWith('https://')
+              ? msg.content
+              : undefined,
           card:
             msg.contentType === 'ImageResponseCard' ? msg.imageResponseCard : undefined,
         }),

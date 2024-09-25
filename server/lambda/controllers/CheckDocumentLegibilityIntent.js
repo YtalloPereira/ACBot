@@ -2,6 +2,7 @@ const { confirmResponseCard } = require('../utils/confirmResponseCard');
 const { detectImageText } = require('../utils/detectImageText');
 const { fetchAvailableDocuments } = require('../utils/fetchAvaliableDocuments');
 const { findProcess } = require('../utils/findProcess');
+const { generateAudio } = require('../utils/generateAudio');
 const { handleResponse } = require('../utils/responseBuilder');
 
 module.exports.handleCheckDocumentLegibilityIntent = async (event) => {
@@ -25,11 +26,11 @@ module.exports.handleCheckDocumentLegibilityIntent = async (event) => {
     }
 
     const doc = documents.find((d) => d.key === documentType.toUpperCase());
-    
 
     if (!doc) {
       const msg = 'Ocorreu um erro ao tentar verificar o documento.';
-      return handleResponse(event, 'Close', null, msg);
+      const audioUrl = await generateAudio(msg);
+      return handleResponse(event, 'Close', null, audioUrl);
     }
 
     try {
@@ -45,15 +46,15 @@ module.exports.handleCheckDocumentLegibilityIntent = async (event) => {
 
       if (missingTags.length > 0) {
         const msg = `A imagem não corresponde ao documento **${documentType}**, não está legível o suficiente ou faltam partes do documento.`;
-        return handleResponse(event, 'Close', null, msg);
+        const audioUrl = await generateAudio(msg);
+        return handleResponse(event, 'Close', null, audioUrl);
       }
 
-      return handleResponse(
-        event,
-        'Close',
-        null,
-        `A imagem corresponde ao documento **${documentType}**.`
-      );
+      const msg = `A imagem corresponde ao documento **${documentType}**.`;
+
+      const audioUrl = await generateAudio(msg);
+
+      return handleResponse(event, 'Close', null, audioUrl);
     } catch (error) {
       console.error(error);
       const msg = 'Ocorreu um erro ao tentar verificar o documento.';

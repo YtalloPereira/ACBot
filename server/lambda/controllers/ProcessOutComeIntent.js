@@ -15,7 +15,10 @@ module.exports.handleProcessOutcomeIntent = async (event) => {
     // Retorna uma mensagem de erro
     const msg =
       'Desculpe, houve um erro ao consultar os efeitos resultantes dos requerimentos, tente novamente.';
-    return handleResponse(event, 'Close', null, msg);
+
+    const audioUrl = await generateAudio(msg);
+
+    return handleResponse(event, 'Close', null, audioUrl);
   }
 
   if (Question) {

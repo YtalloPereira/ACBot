@@ -5,6 +5,7 @@ const tablesArray = [
   { table: 'processes', attribute: 'processId' },
   { table: 'guides', attribute: 'keyGuide' },
   { table: 'documents', attribute: 'key' },
+  { table: 'audios', attribute: 'phraseHash' },
 ];
 
 const createTable = async (data) => {

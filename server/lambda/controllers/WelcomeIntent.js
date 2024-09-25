@@ -1,3 +1,4 @@
+const { generateAudio } = require('../utils/generateAudio');
 const { handleResponse } = require('../utils/responseBuilder');
 
 module.exports.handleWelcomeIntent = async (event) => {
@@ -11,5 +12,9 @@ module.exports.handleWelcomeIntent = async (event) => {
 
   // Define outra mensagem caso o usuário já tenha recebido a mensagem de boas-vindas
   const msg = 'Oi, Estou aqui para te ajudar, qual a sua dúvida?';
-  return handleResponse(event, 'Close', null, msg);
+
+  // Gera ou busca o áudio da mensagem
+  const audioUrl = await generateAudio(msg);
+
+  return handleResponse(event, 'Close', null, audioUrl);
 };
