@@ -52,9 +52,7 @@ O sistema será composto pelos seguintes componentes principais:
 - **Notificações:** Serviços de notificação para envio de e-mails ou mensagens sobre o status dos processos, assegurando que os alunos sejam informados de qualquer atualização relevante.
 ###
 
-<p align="center">
-  <img src="./assets/ACBot-architecture.jpg" alt="Diagrama de Arquitetura">
-</p>
+![acbot-architecture](./assets/images/ACBot-architecture.png)
 
 ###
 ***
@@ -71,6 +69,7 @@ O diagrama mostra como o usuário interage com a interface de chat, que envia so
 5. **[API Gateway](https://aws.amazon.com/api-gateway)** - *Exposição de funções Lambda via endpoints API, facilitando a comunicação entre o frontend e o backend.*
 6. **[Cognito](https://aws.amazon.com/cognito/)** - *Serviço de autenticação e controle de acesso, assegurando que apenas usuários autorizados possam interagir com o bot.*
 7. **[Serverless Framework](https://www.serverless.com/)** - *Facilita a construção e implementação de aplicações serverless, simplificando a gestão de recursos na nuvem.*
+8. **[Nextjs](https://nextjs.org)** - *Biblioteca JavaScript para construir frontends/backends baseados em ReactJs.*
 8. **[React](https://reactjs.org)** - *Biblioteca JavaScript para construir interfaces de usuário, proporcionando uma experiência interativa e responsiva.*
 9. **[Axios](https://axios-http.com/)** - *Biblioteca para realizar requisições HTTP, facilitando a comunicação com APIs externas.*
 10. **[S3](https://aws.amazon.com/s3)** - *Armazenamento de arquivos de áudio e logs, oferecendo uma solução escalável para armazenar dados.*
