@@ -185,7 +185,13 @@ A importância deste projeto reside na simplificação dos processos acadêmicos
 
 ## 🚧 Desafios e Soluções
 
+### 1. Primeiro Contato com a SDK do JS
+- **Desafio:** A equipe optou por usar java script no projeto, mas alguns membros não estavam familiarizados com a nova SDK uma vez que ao longo das sprint praticamente usamos apenas python
+- **Solução:** Revisão na documentação da SDK disponibilizada pela AWS 
 
+### 2. Utilização dos Recursos do Lex
+- **Desafio:** Após as primeiras implementações das intents percebemos que podíamos melhorar 
+- **Solução:** Revisão do código das intents delegando quando necessário, responsabilidades ao próprio lex ao invés de fazer tudo via código 
 
 ## 🌐 Acesso ao Chatbot
 
