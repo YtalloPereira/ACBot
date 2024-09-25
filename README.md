@@ -29,12 +29,10 @@ O projeto consiste em um bot de assistência para processos acadêmicos, desenvo
 ### Justificativa
 A importância deste projeto reside na simplificação dos processos acadêmicos, melhorando a eficiência e a experiência do usuário. O bot visa reduzir a carga administrativa tanto para os alunos quanto para o corpo administrativo. Com a utilização de tecnologias como reconhecimento de imagem e IA generativa, o bot pode oferecer respostas mais personalizadas e seguras, garantindo que todas as etapas sejam executadas corretamente.
 
-## Principais Funcionalidades
-
-- **Integração com Lex:** Um chatbot que se comunica com o usuário, processando textos e mensagens.
+### Principais Funcionalidades
+- **Consulta de processos acadêmicos:** Integração com DynamoDB para armazenar e consultar tipos de processos acadêmicos.
 - **Reconhecimento de imagens:** Utiliza o Amazon Rekognition para validação de documentos.
 - **Conversão de texto para áudio:** Com o Amazon Polly, o bot gera áudio a partir de respostas textuais.
-- **Consulta de processos acadêmicos:** Integração com DynamoDB para armazenar e consultar tipos de processos acadêmicos.
 
 ## 🏛️ Arquitetura
 
@@ -216,7 +214,7 @@ O sistema é composto pelos seguintes componentes principais:
 
 ## 🌐 Acesso ao Chatbot
 
-O ACBot está disponível em: [acbot.com.br](https://)
+O ACBot está disponível em: [https://main.ded9i8rzd9kck.amplifyapp.com](https://main.ded9i8rzd9kck.amplifyapp.com)
 
 ## 👥 Contribuidores
 
@@ -224,12 +222,3 @@ O ACBot está disponível em: [acbot.com.br](https://)
 | :---: | :---: | :---: | :---: |
 
 ***
-
-  
----
-
-
-
-
-
-
