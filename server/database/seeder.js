@@ -34,9 +34,11 @@ const seedToTable = async (seed) => {
 (async () => {
   try {
     // Inicia o seed de guias, processos e documentos
-    seedArray.map(async (item) => {
-      await seedToTable(item);
-    });
+    await Promise.all(
+      seedArray.map(async (item) => {
+        await seedToTable(item);
+      })
+    );
 
     console.log('Seed finalizado com sucesso!');
   } catch (error) {
