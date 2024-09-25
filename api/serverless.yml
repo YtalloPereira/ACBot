@@ -1,6 +1,6 @@
 service: academic-soon
 
-package: 
+package:
   exclude:
     - .env
     - .env.example
@@ -10,6 +10,7 @@ provider:
   runtime: nodejs20.x
   region: ${env:REGION}
   profile: ${env:PROFILE_NAME, 'default'}
+  stage: ${opt:stage, 'dev'} 
   environment:
     RESOURCE_PREFIX: ${env:RESOURCE_PREFIX}
   iamRoleStatements:
@@ -19,11 +20,11 @@ provider:
         - s3:PutObject
       Resource:
         - arn:aws:s3:::${env:RESOURCE_PREFIX}/*
-      Resource: '*'
     - Effect: Allow
       Action:
         - cloudwatch:PutMetricData
-      Resource: '*'
+      Resource:
+        - !Sub arn:aws:logs:${self:provider.region}:${aws:accountId}:log-group:/aws/lambda/${self:service}-${self:provider.stage}-*
   httpApi:
     authorizers:
       cognitoAuthorizer:
@@ -54,16 +55,16 @@ functions:
       - httpApi:
           path: /v1/images/make-upload
           method: post
-          authorizer: 
+          authorizer:
             name: cognitoAuthorizer
-  
+
   uploadAudio:
     handler: controllers/uploadAudio.handler
     events:
       - httpApi:
           path: /v1/audios/make-upload
           method: post
-          authorizer: 
+          authorizer:
             name: cognitoAuthorizer
 
 resources:
@@ -166,7 +167,7 @@ resources:
           Ref: 'CognitoIdentityPool'
         Roles:
           authenticated: !GetAtt CognitoAuthRole.Arn
-    
+
     ProcessesTable:
       Type: AWS::DynamoDB::Table
       Properties:
