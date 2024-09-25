@@ -1,3 +1,4 @@
+const { handleCheckDocumentLegibilityIntent } = require('./controllers/CheckDocumentLegibilityIntent');
 const {
   handleCheckProcessTypesIntent,
 } = require('./controllers/CheckProcessTypesIntent');
@@ -25,6 +26,8 @@ module.exports.handler = async (event) => {
       return await handleListAllProcessTypesIntent(event);
     case 'ProcessOpeningGuideIntent':
       return await handleProcessOpeningGuideIntent(event);
+    case 'CheckDocumentLegibilityIntent':
+      return await handleCheckDocumentLegibilityIntent(event);
     case 'WelcomeIntent':
       return await handleWelcomeIntent(event);
     case 'ProcessOutcomeIntent':
