@@ -1,7 +1,5 @@
-const { confirmResponseCard } = require('../utils/confirmResponseCard');
 const { detectImageText } = require('../utils/detectImageText');
 const { fetchAvailableDocuments } = require('../utils/fetchAvaliableDocuments');
-const { findProcess } = require('../utils/findProcess');
 const { generateAudio } = require('../utils/generateAudio');
 const { handleResponse } = require('../utils/responseBuilder');
 

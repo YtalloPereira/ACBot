@@ -1,6 +1,7 @@
 const { confirmResponseCard } = require('../utils/confirmResponseCard');
 const { fetchAllProcesses } = require('../utils/fetchAllProcesses');
 const { handleResponse } = require('../utils/responseBuilder');
+const { generateAudio } = require('../utils/generateAudio');
 
 module.exports.handleListAllProcessTypesIntent = async (event) => {
   try {

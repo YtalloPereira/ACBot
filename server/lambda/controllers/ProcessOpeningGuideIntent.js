@@ -2,6 +2,7 @@ const { answerQuestion } = require('../utils/answerQuestion');
 const { confirmResponseCard } = require('../utils/confirmResponseCard');
 const { findGuide } = require('../utils/findGuide');
 const { handleResponse } = require('../utils/responseBuilder');
+const { generateAudio } = require('../utils/generateAudio');
 
 module.exports.handleProcessOpeningGuideIntent = async (event) => {
   const { Question } = event.sessionState.intent.slots;
