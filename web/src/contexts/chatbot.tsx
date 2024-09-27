@@ -82,8 +82,6 @@ export const ChatbotProvider = ({ children }: { children: ReactNode }) => {
         throw error;
       }
 
-      console.log(response);
-
       // Check if the document type is defined in the chatbot and set the file manager state
       const documentDefined =
         response?.sessionState?.sessionAttributes?.documentDefined === 'true';

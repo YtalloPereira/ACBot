@@ -27,7 +27,6 @@ export const ChatbotRecorder = () => {
         audioUrl: `https://${process.env.NEXT_PUBLIC_S3_DOMAIN}/uploads/audios/${filename}`,
       });
 
-      console.log('recognition:', typeof recognition);
       await submitMessage(recognition);
     } catch (error) {
       toast.error('Ocorreu um erro ao enviar o áudio!');

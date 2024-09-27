@@ -24,7 +24,7 @@ provider:
       Action:
         - cloudwatch:PutMetricData
       Resource:
-        - !Sub arn:aws:logs:${self:provider.region}:${aws:accountId}:log-group:/aws/lambda/${self:service}-${self:provider.stage}-*
+        - arn:aws:logs:::log-group:/aws/lambda/${self:service}-${self:provider.stage}-*
   httpApi:
     authorizers:
       cognitoAuthorizer:
@@ -191,6 +191,34 @@ resources:
             AttributeType: S
         KeySchema:
           - AttributeName: keyGuide
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    
+    DocumentsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${env:RESOURCE_PREFIX}-documents
+        AttributeDefinitions:
+          - AttributeName: key
+            AttributeType: S
+        KeySchema:
+          - AttributeName: key
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    AudiosTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${env:RESOURCE_PREFIX}-audios
+        AttributeDefinitions:
+          - AttributeName: phraseHash
+            AttributeType: S
+        KeySchema:
+          - AttributeName: phraseHash
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
