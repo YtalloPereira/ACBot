@@ -10,7 +10,7 @@ const { fromIni } = require('@aws-sdk/credential-providers');
 const profile = process.env.PROFILE_NAME;
 
 const params = {
-  credenciais: fromIni({ profile }),
+  credentials: fromIni({ profile }),
 };
 
 // Cria instâncias dos serviços para acessar os serviços da AWS
