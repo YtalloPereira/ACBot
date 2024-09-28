@@ -16,6 +16,12 @@ Amplify.configure(
         },
       },
     },
+    Storage: {
+      S3: {
+        bucket: process.env.NEXT_PUBLIC_BUCKET_NAME as string,
+        region: process.env.NEXT_PUBLIC_REGION as string,
+      },
+    },
     Interactions: {
       LexV2: {
         [process.env.NEXT_PUBLIC_BOT_NAME as string]: {

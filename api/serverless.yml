@@ -10,7 +10,7 @@ provider:
   runtime: nodejs20.x
   region: ${env:REGION}
   profile: ${env:PROFILE_NAME, 'default'}
-  stage: ${opt:stage, 'dev'} 
+  stage: ${opt:stage, 'dev'}
   environment:
     RESOURCE_PREFIX: ${env:RESOURCE_PREFIX}
   iamRoleStatements:
@@ -33,6 +33,18 @@ provider:
         issuerUrl: !Sub https://cognito-idp.${self:provider.region}.amazonaws.com/${CognitoUserPool}
         audience:
           - !Ref WebCognitoUserPoolClient
+    cors:
+      allowedOrigins:
+        - ${env:ORIGIN}
+      allowedHeaders:
+        - Authorization
+        - Content-Type
+      allowedMethods:
+        - GET
+        - POST
+        - OPTIONS
+        - HEAD
+      allowCredentials: true
 
 functions:
   health:
@@ -75,9 +87,18 @@ resources:
         BucketName: ${env:RESOURCE_PREFIX}
         PublicAccessBlockConfiguration:
           BlockPublicAcls: true
-          IgnorePublicAcls: true
-          BlockPublicPolicy: false
+          IgnorePublicAcls: false
+          BlockPublicPolicy: true
           RestrictPublicBuckets: false
+        CorsConfiguration:
+          CorsRules:
+            - AllowedOrigins:
+                - ${env:ORIGIN}
+              AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - PUT
+              MaxAge: 3000
 
     S3BucketPolicy:
       Type: AWS::S3::BucketPolicy
@@ -155,6 +176,9 @@ resources:
                 - Effect: Allow
                   Action:
                     - cognito-identity:GetCredentialsForIdentity
+                  Resource: '*'
+                - Effect: Allow
+                  Action: 
                     - lex:PostText
                     - lex:PostContent
                     - lex:RecognizeText
@@ -195,7 +219,7 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-    
+
     DocumentsTable:
       Type: AWS::DynamoDB::Table
       Properties:

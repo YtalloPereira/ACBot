@@ -128,7 +128,9 @@ export const Chatbot = () => {
 
       setMessage({
         from: 'user',
-        imageUrl: `https://${process.env.NEXT_PUBLIC_S3_DOMAIN}/${filename}`,
+        imageUrl: new URL(
+          `https://${process.env.NEXT_PUBLIC_S3_DOMAIN}/uploads/images/${filename}`,
+        ),
       });
 
       await submitMessage(filename);
@@ -185,7 +187,6 @@ export const Chatbot = () => {
             className="rounded-xl rounded-t-none px-1 py-2 gap-1"
             name="message"
             data-disabled={botTyping || fileManager || progress !== null}
-            id="message"
           >
             <Control
               id="message"

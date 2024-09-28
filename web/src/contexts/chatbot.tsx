@@ -19,8 +19,8 @@ export type IResponseCard = {
 export type IChatbotMessage = {
   from: 'bot' | 'user';
   text?: string;
-  audioUrl?: string;
-  imageUrl?: string;
+  audioUrl?: URL;
+  imageUrl?: URL;
   card?: IResponseCard;
 };
 
@@ -106,7 +106,7 @@ export const ChatbotProvider = ({ children }: { children: ReactNode }) => {
               : undefined,
           audioUrl:
             msg.contentType === 'PlainText' && msg.content?.startsWith('https://')
-              ? msg.content
+              ? new URL(msg.content)
               : undefined,
           card:
             msg.contentType === 'ImageResponseCard' ? msg.imageResponseCard : undefined,
@@ -127,11 +127,6 @@ export const ChatbotProvider = ({ children }: { children: ReactNode }) => {
     setProgress(33);
 
     const signedUrlResponse = await getUploadAudioSignedUrl(audioFile.name);
-
-    if (signedUrlResponse === undefined) {
-      setProgress(null);
-      throw new Error('Failed to get signed url');
-    }
 
     setProgress(75);
 
@@ -161,11 +156,6 @@ export const ChatbotProvider = ({ children }: { children: ReactNode }) => {
     setProgress(1);
 
     const signedUrlResponse = await getUploadImageSignedUrl(file.name);
-
-    if (signedUrlResponse === undefined) {
-      setProgress(null);
-      throw new Error('Failed to get signed url');
-    }
 
     setProgress(50);
 

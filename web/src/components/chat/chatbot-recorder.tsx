@@ -14,6 +14,7 @@ export const ChatbotRecorder = () => {
     setIsRecording,
     submitAudio,
     setMessage,
+    setProgress,
     submitMessage,
   } = useChatbot();
 
@@ -24,11 +25,14 @@ export const ChatbotRecorder = () => {
 
       setMessage({
         from: 'user',
-        audioUrl: `https://${process.env.NEXT_PUBLIC_S3_DOMAIN}/uploads/audios/${filename}`,
+        audioUrl: new URL(
+          `https://${process.env.NEXT_PUBLIC_S3_DOMAIN}/uploads/audios/${filename}`,
+        ),
       });
 
       await submitMessage(recognition);
     } catch (error) {
+      setProgress(null);
       toast.error('Ocorreu um erro ao enviar o áudio!');
     }
   };

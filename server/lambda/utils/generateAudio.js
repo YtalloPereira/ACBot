@@ -40,7 +40,7 @@ module.exports.generateAudio = async (input) => {
   const audioBuffer = await Buffer.from(bytesArray);
 
   // Cria o hash do áudio
-  const audioKey = `audios/${hash}.mp3`;
+  const audioKey = `uploads/audios/${hash}.mp3`;
 
   // Salva o áudio no S3
   await uploadToS3({

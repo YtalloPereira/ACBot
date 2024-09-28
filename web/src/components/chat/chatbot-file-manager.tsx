@@ -9,10 +9,10 @@ export const ChatbotFileManager = () => {
     botTyping,
     isRecording,
     progress,
-    fileManager,
     setMessage,
     submitMessage,
     submitImage,
+    setProgress,
   } = useChatbot();
 
   const handleFileSelected = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -33,11 +33,14 @@ export const ChatbotFileManager = () => {
 
       setMessage({
         from: 'user',
-        imageUrl: `https://${process.env.NEXT_PUBLIC_S3_DOMAIN}/uploads/images/${filename}`,
+        imageUrl: new URL(
+          `https://${process.env.NEXT_PUBLIC_S3_DOMAIN}/uploads/images/${filename}`,
+        ),
       });
 
       await submitMessage(filename);
     } catch (error) {
+      setProgress(null);
       toast.error('Ocorreu um erro ao enviar a imagem!');
     }
   };
