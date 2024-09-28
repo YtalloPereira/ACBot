@@ -87,9 +87,9 @@ resources:
         BucketName: ${env:RESOURCE_PREFIX}
         PublicAccessBlockConfiguration:
           BlockPublicAcls: true
-          IgnorePublicAcls: false
+          IgnorePublicAcls: true
           BlockPublicPolicy: true
-          RestrictPublicBuckets: false
+          RestrictPublicBuckets: true
         CorsConfiguration:
           CorsRules:
             - AllowedOrigins:
@@ -97,6 +97,7 @@ resources:
               AllowedHeaders:
                 - '*'
               AllowedMethods:
+                - GET
                 - PUT
               MaxAge: 3000
 

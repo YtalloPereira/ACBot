@@ -45,11 +45,11 @@ export const ChatbotMessage = ({
           />
         )}
 
-        {audioUrl && <audio src={audioUrl} controls />}
+        {audioUrl && <audio src={audioUrl.toString()} controls />}
 
         {imageUrl && (
           <Image
-            src={imageUrl}
+            src={imageUrl.toString()}
             alt="image"
             width={200}
             height={200}

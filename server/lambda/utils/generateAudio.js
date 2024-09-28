@@ -5,6 +5,7 @@ const { SynthesizeSpeechCommand } = require('@aws-sdk/client-polly');
 const { uploadToS3 } = require('./uploadToS3');
 const { saveToDynamoDB } = require('./saveToDynamoDB');
 const { Buffer } = require('buffer');
+const { getObjectToS3 } = require('./getObjectToS3');
 
 module.exports.generateAudio = async (input) => {
   // Gera o hash do texto de entrada
@@ -21,7 +22,10 @@ module.exports.generateAudio = async (input) => {
 
   // Se o áudio já foi gerado, retorna a URL
   if (dynamoDbResponse.Item) {
-    return dynamoDbResponse.Item.audioUrl;
+    // Pega a URL do audio do s3 assinada
+    const audioUrl = await getObjectToS3(dynamoDbResponse.Item.audioPath);
+
+    return audioUrl;
   }
 
   // Se o áudio não foi gerado, cria o comando de SynthesizeSpeech do Polly para sintetizar a fala
@@ -40,22 +44,23 @@ module.exports.generateAudio = async (input) => {
   const audioBuffer = await Buffer.from(bytesArray);
 
   // Cria o hash do áudio
-  const audioKey = `uploads/audios/${hash}.mp3`;
+  const audioPath = `uploads/audios/${hash}.mp3`;
 
   // Salva o áudio no S3
   await uploadToS3({
-    key: audioKey,
+    key: audioPath,
     data: audioBuffer,
   });
 
-  const audioUrl = `https://${process.env.RESOURCE_PREFIX}.s3.amazonaws.com/${audioKey}`;
+  // Pega a URL do audio do s3 assinada
+  const audioUrl = await getObjectToS3(audioPath);
 
   // Salva no DynamoDB
   await saveToDynamoDB({
     table: 'audios',
     item: {
       phraseHash: hash,
-      audioUrl,
+      audioPath,
     },
   });
 

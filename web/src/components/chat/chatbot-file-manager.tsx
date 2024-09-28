@@ -1,5 +1,6 @@
 import { useChatbot } from '@/hooks/use-chatbot';
 import { validateImage } from '@/utils/validate-image';
+import { getUrl } from '@aws-amplify/storage';
 import { Paperclip } from 'lucide-react';
 import { ChangeEvent } from 'react';
 import { toast } from 'sonner';
@@ -31,11 +32,11 @@ export const ChatbotFileManager = () => {
     try {
       const filename = await submitImage(selectedFile);
 
+      const image = await getUrl({ path: `uploads/images/${filename}` });
+
       setMessage({
         from: 'user',
-        imageUrl: new URL(
-          `https://${process.env.NEXT_PUBLIC_S3_DOMAIN}/uploads/images/${filename}`,
-        ),
+        imageUrl: image.url,
       });
 
       await submitMessage(filename);

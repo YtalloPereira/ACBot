@@ -1,6 +1,7 @@
 import { useChatbot } from '@/hooks/use-chatbot';
 import { startAudioRecorder, stopAudioRecorder } from '@/lib/audio-recorder';
 import { startSpeechRecognition, stopSpeechRecognition } from '@/lib/speech-recognition';
+import { getUrl } from '@aws-amplify/storage';
 import { Mic, MicOff } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
@@ -23,11 +24,11 @@ export const ChatbotRecorder = () => {
     try {
       const filename = await submitAudio(audioUrl);
 
+      const audio = await getUrl({ path: `uploads/audios/${filename}` });
+
       setMessage({
         from: 'user',
-        audioUrl: new URL(
-          `https://${process.env.NEXT_PUBLIC_S3_DOMAIN}/uploads/audios/${filename}`,
-        ),
+        audioUrl: audio.url,
       });
 
       await submitMessage(recognition);

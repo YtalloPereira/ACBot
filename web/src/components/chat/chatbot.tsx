@@ -2,6 +2,7 @@
 
 import { useChatbot } from '@/hooks/use-chatbot';
 import { validateImage } from '@/utils/validate-image';
+import { getUrl } from '@aws-amplify/storage';
 import { MessageCircle, Upload } from 'lucide-react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -109,6 +110,10 @@ export const Chatbot = () => {
     event.preventDefault();
     event.stopPropagation();
 
+    if (!fileManager) {
+      return;
+    }
+
     const files = event.dataTransfer.files;
 
     setIsDragging(false);
@@ -126,11 +131,11 @@ export const Chatbot = () => {
     try {
       const filename = await submitImage(selectedFile);
 
+      const image = await getUrl({ path: `uploads/images/${filename}` });
+
       setMessage({
         from: 'user',
-        imageUrl: new URL(
-          `https://${process.env.NEXT_PUBLIC_S3_DOMAIN}/uploads/images/${filename}`,
-        ),
+        imageUrl: image.url,
       });
 
       await submitMessage(filename);
