@@ -1,5 +1,6 @@
 const { GetCommand } = require('@aws-sdk/lib-dynamodb');
 const { dynamoDBDocClient } = require('../lib/aws');
+const { getObjectToS3 } = require('./getObjectToS3');
 
 module.exports.findProcess = async (id) => {
   // Cria um comando de get para buscar o processo pelo id
@@ -45,14 +46,8 @@ module.exports.findProcess = async (id) => {
         : 'Nenhum documento necessário.'
     }
 
-    ${(attachementIII || attachementIV) ? '**Anexos:**' : ''}
-    ${
-      attachementIII ?
-      `https://${process.env.RESOURCE_PREFIX}.s3.amazonaws.com/documents/Anexo_III.pdf` : ''
-    }
-    ${
-      attachementIV ?
-      `https://${process.env.RESOURCE_PREFIX}.s3.amazonaws.com/documents/Anexo_IV.pdf` : ''
-    }
+    ${attachementIII || attachementIV ? '**Anexos:**' : ''}
+    ${attachementIII ? await getObjectToS3('documents/Anexo_III.pdf') : ''}
+    ${attachementIV ? await getObjectToS3('documents/Anexo_IV.pdf') : ''}
   `.trim();
 };
