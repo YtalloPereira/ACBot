@@ -24,15 +24,16 @@ O projeto **ACBot** foi desenvolvido como parte das sprints 9 e 10 do programa d
 ## 🔎 Sobre o Chatbot
 
 ### Descrição do projeto
-O projeto consiste em um bot de assistência para processos acadêmicos, desenvolvido para alunos do IFPB, com o objetivo de simplificar e otimizar o gerenciamento de processos acadêmicos. Ele proporciona orientação sobre procedimentos e análise de documentos, utilizando tecnologias avançadas de inteligência artificial para oferecer um suporte eficiente e prático nas seguintes áreas:
+O projeto consiste em um bot de assistência para processos acadêmicos, desenvolvido para alunos do IFPB, com o objetivo de facilitar informações e funções para os alunos e servidores que abrem requerimentos de processos acadêmicos. Ele proporciona orientação sobre procedimentos, passo a passo e análise de documentos, utilizando tecnologias avançadas de inteligência artificial para oferecer um suporte eficiente, prático e amigável.
 
 ### Justificativa
-A importância deste projeto reside na simplificação dos processos acadêmicos, melhorando a eficiência e a experiência do usuário. O bot visa reduzir a carga administrativa tanto para os alunos quanto para o corpo administrativo. Com a utilização de tecnologias como reconhecimento de imagem e IA generativa, o bot pode oferecer respostas mais personalizadas e seguras, garantindo que todas as etapas sejam executadas corretamente.
+A justificativa e importância deste projeto reside na simplificação em facilitar a vida de todos que fazem parte da instituição e lidam com processos acadêmicos, melhorando a eficiência e a experiência do usuário. O bot visa reduzir as dificuldades tanto para os alunos quanto para o corpo administrativo com a utilização de tecnologias como reconhecimento de imagem e IA generativa, o bot pode oferecer respostas mais personalizadas e seguras, garantindo que todas as etapas sejam executadas corretamente.
 
 ### Principais Funcionalidades
-- **Consulta de processos acadêmicos:** Integração com DynamoDB para armazenar e consultar tipos de processos acadêmicos.
-- **Reconhecimento de imagens:** Utiliza o Amazon Rekognition para validação de documentos.
+- **Consulta e listagem de processos acadêmicos:** Integração com DynamoDB para armazenar e consultar tipos de processos acadêmicos.
+- **Validação de legibilidade de imagens:** Utiliza o Amazon Rekognition para validação de documentos.
 - **Conversão de texto para áudio:** Com o Amazon Polly, o bot gera áudio a partir de respostas textuais.
+- **Geração de conteúdo com IA Generativa:** Com o amazon Bedrock, o bot recebe os passos sobre determinada tarefa e auxilar em questões do usuário.
 
 ## 🏛️ Arquitetura
 
@@ -40,7 +41,8 @@ A importância deste projeto reside na simplificação dos processos acadêmicos
 
 O sistema é composto pelos seguintes componentes principais:
 
-- **React:** Frontend do sistema, onde os alunos interagem com o bot por meio de uma interface web moderna, responsiva e intuitiva.
+- **React:** Tecnologia utilizada no sistema, onde os alunos interagem com o bot por meio de uma interface web moderna, responsiva e intuitiva.
+- **Nextjs:** Frontend do sistema, que faz ligações entre todos os componentes e requisições do sistema para entregar uma prévea do sistema.
 - **Axios:** Utilizado para fazer chamadas HTTP no frontend, facilitando a comunicação com as APIs do backend.
 - **AWS Amplify:** Facilita a integração do frontend com os serviços AWS, simplificando a autenticação, o armazenamento e a interação com as APIs do sistema.
 - **Amazon Cognito:** Gerencia a autenticação e autorização dos usuários (alunos), garantindo que somente usuários autenticados tenham acesso a determinadas funcionalidades.
@@ -54,9 +56,11 @@ O sistema é composto pelos seguintes componentes principais:
 
 ### Detalhamento dos Componentes
 
-- **Frontend (React + Amplify):** A interface de usuário (UI) foi construída usando **React**, que oferece uma experiência interativa e moderna. **AWS Amplify** foi utilizado para facilitar a integração do frontend com os serviços da AWS, especialmente na autenticação (Cognito) e chamadas de API (Axios).
+- **Frontend (Nextjs + React):** A interface de usuário (UI) foi construída usando o **Nextjs** que tem como principal tecnologia o **React**, que oferece uma experiência interativa e moderna.
+ 
+- **AWS Amplify** Foi utilizado para facilitar a integração do frontend com os serviços da AWS, especialmente para a autenticação com o (Cognito) e utilização dos recursos autenticados em chamadas de API (Axios) e utilização dos serviços como S3 e Lex.
   
-  - **Axios** foi usado para realizar requisições HTTP entre o frontend e o backend (AWS Lambda), manipulando respostas e erros de forma eficiente.
+- **Axios** foi usado para realizar requisições HTTP entre o frontend e o backend (AWS Lambda), manipulando respostas e erros de forma eficiente.
   
 - **Autenticação e autorização (Cognito):** **Amazon Cognito** gerencia o controle de usuários e permissões. Ele autentica os usuários e gera tokens de autorização para garantir o acesso seguro às APIs e dados.
 
@@ -64,7 +68,9 @@ O sistema é composto pelos seguintes componentes principais:
 
 - **Armazenamento (S3):** **Amazon S3** é utilizado para armazenar documentos enviados pelos alunos.
 
-- **Processamento de linguagem natural (Lex + Bedrock):** O **Amazon Lex** gerencia a compreensão e processamento de linguagem natural, permitindo que o bot responda a perguntas textuais. O **Amazon Bedrock** complementa o Lex, utilizando IA generativa para fornecer respostas mais avançadas e personalizadas.
+- **Chatbot (Lex):** O **Amazon Lex** gerencia a compreensão e processamento de linguagem natural, permitindo que o bot responda a perguntas textuais. O 
+
+- **IA Generativa (Amazon Bedrock)** Complementa as respostas do **Lex**, gerando conteúdos relevantes e personalizadas para responder questões dos usuários.
 
 - **Reconhecimento de imagens (Rekognition):** O **Amazon Rekognition** é utilizado para análise de imagens, como fotos de documentos, verificando legibilidade e autenticidade.
 
@@ -72,19 +78,17 @@ O sistema é composto pelos seguintes componentes principais:
 
 ### Fluxo de Interação
 
-1. O aluno acessa o frontend do sistema, construído com **React**, e faz login utilizando o **Amazon Cognito**.
+1. O aluno acessa a aplicação, faz login ou cria uma conta e acessa o sistema.
 2. Após autenticado, o aluno interage com o bot, enviando perguntas, documentos ou mensagens de voz. O **Amazon Lex** processa as interações textuais e de voz e, se necessário, chama o **AWS Lambda** para processar a lógica exigida.
 3. Se o aluno enviar um documento, o **Amazon Rekognition** é chamado para verificar a autenticidade e a legibilidade do arquivo.
 4. O bot pode utilizar o **Amazon Polly** para converter respostas textuais em áudio, facilitando a interação para alunos com necessidades especiais.
 5. Os dados e documentos dos alunos são armazenados de forma segura no **Amazon S3** e **Amazon DynamoDB**.
 6. O frontend se comunica com o backend utilizando **Axios**, enviando dados e recebendo respostas.
-7. **AWS Amplify** facilita a conexão entre o frontend e os serviços AWS, como o Cognito e as APIs de backend.
+7. **AWS Amplify** facilita a conexão entre o frontend e os serviços AWS, como o Cognito, o Lex, o S3 e as APIs de backend.
 
 ### Diagrama de arquitetura
 
-<p align="center">
-  <img src="./assets/images/ACBot-architecture.png" alt="Diagrama de Arquitetura Atualizada">
-</p>
+![arquitetura-sistema](./assets/images/ACBot-architecture.png)
 
 ## ⚙️ Tecnologias Utilizadas
 
@@ -151,13 +155,62 @@ O sistema é composto pelos seguintes componentes principais:
 ## 🚀 Execução e utilização
 
 ### Pré-requisitos
+- **Conta AWS**
+- **NodeJS >=20**
+- **AWS CLI V2**
 
-### Passos de inicialização
+### Passos de inicialização da API com o Serverless
 
-### Passos para executar as funções com o Serverless no API Gateway e Lambda
+1. Clone o repositório: `git clone -b grupo-1 https://github.com/Compass-pb-aws-2024-MAIO-A/sprints-9-10-pb-aws-maio.git`.
+2. Navegue até o diretório do projeto: `cd sprints-9-10-pb-aws-maio`.
+3. Instale o serverless: `npm install -g serverless`.
+4. Vá para a pasta `api/`.
+5. Adicione as variáveis de ambiente criando um arquivo `.env` na pasta `api/` seguindo o modelo do arquivo **[.env.example](/api/.env.example)**.
+6. Configure a AWS CLI com credenciais ou via SSO, e com profile default ou outro definido.
+   - Se a configuração foi feita definindo um **profile**, adicione a variável `PROFILE_NAME` assim como sugerido no exemplo de env do passo anterior.
+7. Rode o comando `serverless` e logue na sua conta
+8. Utilize o comando `serverless deploy` e verifique o funcionamento da API com os endpoints retornados no terminal, o retorno será parecido com isso:
+
+```bash
+Deploying "academic-soon" to stage "dev" (us-east-1)
+
+✔ Service deployed to stack academic-soon-dev (30s)
+
+endpoints:
+  GET - https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/
+  GET - https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/v1
+  POST - https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/v1/images/make-upload
+  POST - https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/v1/audios/make-upload
+functions:
+  health: academic-soon-dev-health (3.3 kB)
+  v1Description: academic-soon-dev-v1Description (3.3 kB)
+  uploadImage: academic-soon-dev-uploadImage (3.3 kB)
+  uploadAudio: academic-soon-dev-uploadAudio (3.3 kB)
+```
 
 ### Passos para executar o chatbot no Lex e o backend no Lambda
 
+1. Após executar os passos acima, acesse vá para o diretório do **[bot.zip](/assets/bot/bot.zip)**.
+2. Abra o seu console da AWS, busque pelo serviço Lex, importe este arquivo zip do bot e execute o build.
+3. Busque pelo serviço Lambda no console da AWS, crie uma nova função lambda para o **Node.js 20.x** e arquitetura **x86_64**.
+4. Compacte o diretório da função **[lambda](./server/lambda)** e importe o arquivo zip nessa função lambda criada no passo anterior.
+5. Volte para o bot do Lex, abra o chat, vá na engrenagem(⚙️) e selecione a função lambda importada.
+
+
+### Passos para popularizar as tabelas com as informações que o bot precisa
+
+1. Após os passos acima, acesse a pasta `server/` e instale todos os pacotes do projeto com o `npm install`.
+2. Adicione as variáveis de ambiente criando um arquivo `.env` na pasta `server/` seguindo o modelo do arquivo **[.env.example](/server/.env.example)** assim como os passos da parte da **api**, lembrando de utilizar a mesma variável para o `RESOURCE_PREFIX` das varáiveis da **api**.
+3. Execute o script de popularização de tabelas: `npm run db:seed`.
+4. Execute o script de popularização do s3: `npm run s3:storage`.
+
+### Passos para implantar o frontend no Amplify
+
+1. Após os passos acima, no console AWS, busque pelo serviço AWS Amplify
+2. Ao acessar o serviço, conecte o repositório do github ao Amplify, selecione a pasta `web/` desse projeto, insira as variáveis de ambiente seguindo o modelo do **[.env.example](/web/.env.example)** e faça o deploy da aplicação.
+3. Acesse o endpoint da aplicação que foi gerado.
+
+#### Após todos esses passos acima, a aplicação estará pronta para se utilizar integrada aos serviços da AWS
 
 ## 🧱 Estrutura do projeto
 
