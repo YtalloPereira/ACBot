@@ -110,13 +110,13 @@ export const Chatbot = () => {
     event.preventDefault();
     event.stopPropagation();
 
+    setIsDragging(false);
+
     if (!fileManager) {
       return;
     }
 
     const files = event.dataTransfer.files;
-
-    setIsDragging(false);
 
     if (!files?.length) {
       return;
@@ -157,8 +157,8 @@ export const Chatbot = () => {
           onDragOver={handleDragOver}
           onDrop={handleDrop}
         >
-          {isDragging && (
-            <div className="size-full bg-background/40 rounded-xl backdrop-blur-sm absolute left-0 top-0 flex flex-1 items-center justify-center flex-col">
+          {isDragging && fileManager && (
+            <div className="size-full bg-background/40 rounded-xl backdrop-blur-sm absolute left-0 top-0 flex flex-1 items-center justify-center flex-col z-10">
               <Upload className="size-8" />
               <h1 className="font-bold text-2xl max-w-96 text-center">
                 Solte a midia aqui para ser adicionada
