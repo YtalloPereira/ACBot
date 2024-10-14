@@ -1,6 +1,6 @@
 # 🎓🤖 ACBot
 
-O projeto **ACBot** foi desenvolvido como parte das sprints 9 e 10 do programa de bolsas Compass UOL para formação em machine learning na AWS e tem como objetivo criar um chatbot educacional utilizando o **Amazon Lex** e outras tecnologias da AWS para fornecer informações sobre processos academicos do Instituto Federal de Educação, Ciência e Tecnologia da Paraíba.
+O projeto **ACBot** é um chatbot educacional desenvolvido utilizando o **Amazon Lex** e outras tecnologias da AWS para fornecer informações sobre processos academicos do Instituto Federal de Educação, Ciência e Tecnologia da Paraíba.
 
 ## 📖 Índice
 
@@ -161,7 +161,7 @@ O sistema é composto pelos seguintes componentes principais:
 
 ### Passos de inicialização da API com o Serverless
 
-1. Clone o repositório: `git clone -b grupo-1 https://github.com/Compass-pb-aws-2024-MAIO-A/sprints-9-10-pb-aws-maio.git`.
+1. Clone o repositório: `git clone https://github.com/YtalloPereira/ACBot`.
 2. Navegue até o diretório do projeto: `cd sprints-9-10-pb-aws-maio`.
 3. Instale o serverless: `npm install -g serverless`.
 4. Vá para a pasta `api/`.
